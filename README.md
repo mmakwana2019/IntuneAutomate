@@ -1,6 +1,6 @@
 # IntuneAutomate - Coming Soon
-Simplify Key Microsoft Intune tasks using existing licensed resources and skills.
-Check out IntuneAutomate Mobile - Already available for download and use (https://github.com/Croxleyboy/IntuneAutomateMobile)
+Simplify Key Microsoft Intune tasks using existing company skills and license investments. 
+Check out the companion App - IntuneAutomate Mobile - Already available for download and use (https://github.com/Croxleyboy/IntuneAutomateMobile)
 
 ![IntuneAutomate Dashboard](IntuneAutomateDashboard.png)
 
@@ -26,16 +26,17 @@ IntuneAutomate bridges the gap between SME managers and IT Admins. Simplify some
 
 ## 🎯 **Purpose**
 
-IntuneAutomate allows SME managers and IT Admins take control of useful tasks quickly like renaming a Windows device to adhere to company naming standards, assigning a user to a specific Intune managed application and deploying Industry curated Intune configuration in 3 clicks. While Intune is powerful, sometimes you need fast, actionable ways to quickly make updates without extra complexity.
-This solution is Microsoft-focused and runs entirely within your own tenant, leveraging your existing security posture—no and no external subscriptions required.
+IntuneAutomate allows SME managers and IT Admins take control of useful tasks quickly like renaming a Windows device to adhere to company naming standards and asset management policies, assigning a user to a specific Intune managed application, deploying Industry curated Intune configuration in 3 clicks (Finance to start with), Check in with your Intune and device metrics without all the navigation complexity AND now included Drift Management, starting with UTCM Conditional Access. While Intune is powerful, sometimes you need fast, actionable ways to quickly make updates without the extra complexity and divid the actions with Managers together with system Admins.
+This solution is Microsoft-focused and runs entirely within your own tenant, leveraging your existing security posture—no and no external subscriptions required. PLUS you get to shape and change the solution to your our standards - Use it as a template or use the community updates as they are released. 
 A ready-to-use automation toolkit built using:
  
 - **SharePoint Lists**  
 - **Microsoft Power Automate Flows**  
 - **A Microsoft Power Application**  
-- **Microsoft Intune/Entra data**    
+- **Microsoft Intune/Entra data**
+- **Microsoft Azure**    
 
-Visit the website for additional information and use this GitHub resource to download and get Started with the solution
+Visit the website for additional information and use this GitHub resource to download and get Started with the solution, including a comprehensive setup guide.
 
 ---
 
@@ -47,13 +48,14 @@ Before the release of IntuneAutomate v0.1 This repository does not contain the s
 
 ## 🤝 Future Functionality
 
-As a FREE Community tool new features, bug fixes and updates will be made available over time. BUT if you would like to be a part of this tool please contribute to the solution.
+As a FREE Community tool new features, bug fixes and updates will be made available over time. BUT if you would like to be a part of this tool I'd love to get your ideas and helpful design and configuration Updates. Please help shape the future updates and contribute to the solution.
 
 **Multiple new features Incoming**.
 - New Personapacks for Retail, Healthcare and more Industries.
 - Additiopnal reports 
 - Enhancements to the Asset manager
-- UI Tweaks and improvements 
+- UI Tweaks and improvements
+- UTCM Enhancements and added Resource Types as Microsoft moves to GA
 
 ## 🤝 Community Contribution
 
@@ -69,8 +71,8 @@ Please see our [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on how to get
 ## 📌 **How to Get Started**
 
 1. Clone or download this repository.
-2. Import the provided **Power solution** into your environment.
-3. Configure connections for Microsoft 365 services.
+2. Import the provided **Power solution** into your environment (Lists, Flows, App itself, PowerShell scripts, Azure/Entra Configurations, UTCM Setup).
+3. Configure connections for Microsoft 365 services using the Configuration Guides.
 4. Customise to fit your organization’s needs in your own tenant.
 
 ---
