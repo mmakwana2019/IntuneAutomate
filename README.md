@@ -3,12 +3,11 @@ Simplify Key Microsoft Intune tasks using existing company skills and license in
 Check out the companion App - IntuneAutomate Mobile - Already available for download and use (https://github.com/Croxleyboy/IntuneAutomateMobile)
 
 ![IntuneAutomate Dashboard](DashBoardScreenshot.png)
-(https://www.youtube.com/watch?v=sENO6wFLxyo&t=5s))
+Check Out the features demo! -(https://www.youtube.com/watch?v=sENO6wFLxyo&t=5s))
 
 # 🚀 Your FREE Microsoft focused Intune management tool
 
 ![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)
-Check Out the features demo! - (https://www.youtube.com/watch?v=sENO6wFLxyo&t)
 
 Welcome to the **The Community driven tool for Microsoft first environments**!  
 IntuneAutomate bridges the gap between SME managers and IT Admins. Simplify some key operations for Microsoft Intune using intuitive tools for Application assignment, Reporting, Asset Management and Industry-guided PersonaPacks - Intune policy bundles deployed in 3 clicks..
