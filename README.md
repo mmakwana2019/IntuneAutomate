@@ -8,7 +8,7 @@ Check out the companion App - IntuneAutomate Mobile - Already available for down
 # 🚀 Your FREE Microsoft focused Intune management tool
 
 ![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)
-![GitHub Stars](https://img.shields.io/github/stars/your-org/hr-automation?style=social)
+Check Out the features demo! - (https://www.youtube.com/watch?v=sENO6wFLxyo&t)
 
 Welcome to the **The Community driven tool for Microsoft first environments**!  
 IntuneAutomate bridges the gap between SME managers and IT Admins. Simplify some key operations for Microsoft Intune using intuitive tools for Application assignment, Reporting, Asset Management and Industry-guided PersonaPacks - Intune policy bundles deployed in 3 clicks..
