@@ -4,7 +4,7 @@ Check out the companion App - IntuneAutomate Mobile - Already available for down
 
 ![IntuneAutomate Dashboard](IntuneAutomateDashboard.png)
 
-# 🚀 Your Microsoft focused Intune management tool - All FREE
+# 🚀 Your FREE Microsoft focused Intune management tool
 
 ![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)
 ![GitHub Stars](https://img.shields.io/github/stars/your-org/hr-automation?style=social)
