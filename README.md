@@ -27,7 +27,7 @@ IntuneAutomate bridges the gap between SME managers and IT Admins. Simplify some
 ## 🎯 **Purpose**
 
 IntuneAutomate allows SME managers and IT Admins take control of useful tasks quickly like renaming a Windows device to adhere to company naming standards and asset management policies, assigning a user to a specific Intune managed application, deploying Industry curated Intune configuration in 3 clicks (Finance to start with), Check in with your Intune and device metrics without all the navigation complexity AND now included Drift Management, starting with UTCM Conditional Access. While Intune is powerful, sometimes you need fast, actionable ways to quickly make updates without the extra complexity and divid the actions with Managers together with system Admins.
--
+
 This solution is Microsoft-focused and runs entirely within your own tenant, leveraging your existing security posture—no and no external subscriptions required. PLUS you get to shape and change the solution to your our standards - Use it as a template or use the community updates as they are released. 
 A ready-to-use automation toolkit built using:
  
