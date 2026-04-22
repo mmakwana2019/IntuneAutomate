@@ -3,6 +3,7 @@ Simplify Key Microsoft Intune tasks using existing company skills and license in
 Check out the companion App - IntuneAutomate Mobile - Already available for download and use (https://github.com/Croxleyboy/IntuneAutomateMobile)
 
 ![IntuneAutomate Dashboard](DashBoardScreenshot.png)
+![IntuneAutomate Dashboard]([DashBoardScreenshot.png](https://www.youtube.com/watch?v=sENO6wFLxyo&t=5s))
 
 # 🚀 Your FREE Microsoft focused Intune management tool
 
