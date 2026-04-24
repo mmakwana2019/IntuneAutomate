@@ -8,6 +8,8 @@ Check out the companion App - IntuneAutomate Mobile - Already available for down
 ![IntuneAutomate Dashboard](DashBoardScreenshot.png)
 For an overview of IntuneAutomate features take a look at the demonstration! (https://www.youtube.com/watch?v=sENO6wFLxyo&t=5s))
 
+[![Andy's GitHub stats](https://github-readme-stats.vercel.app/api?username=Croxleyboy)](https://github.com/Croxleyboy/github-readme-stats)
+
 # 🚀 Your FREE Microsoft focused Intune management tool
 
 ![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)
