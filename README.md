@@ -1,10 +1,9 @@
+[![Andy's GitHub stats](https://github-readme-stats.vercel.app/api?username=Croxleyboy)](https://github.com/anuraghazra/github-readme-stats)
+
 # IntuneAutomate - Now Live
 Simplify Key Microsoft Intune tasks using existing company skills and license investments. 
 
-![IntuneAutomate Mobile](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)
-
 Check out the companion App - IntuneAutomate Mobile - Already available for download and use (https://github.com/Croxleyboy/IntuneAutomateMobile)
-
 
 ![IntuneAutomate Dashboard](DashBoardScreenshot.png)
 For an overview of IntuneAutomate features take a look at the demonstration! (https://www.youtube.com/watch?v=sENO6wFLxyo&t=5s))
