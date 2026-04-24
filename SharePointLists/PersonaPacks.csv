@@ -884,36 +884,33 @@
     }
   ]
 }","On","Wind Def SmartScreen in the shell and for app install control, blocks user overrides for flagged files in shell, and enables SmSc in Edge/browser with override prevention for both sites and file downloads. S","Not Run","https://graph.microsoft.com/beta/deviceManagement/configurationPolicies","34"
-"Finance - Defender Hardening (Tamper Protection and CFA)","Finance","config","PIA - Finance - Defender Hardening (Tamper Protection and CFA)","{
-  ""name"": ""PIA - Finance - Defender Hardening (Tamper Protection and CFA)"",
-  ""platforms"": ""windows10"",
-  ""roleScopeTagIds"": [
-    ""0""
-  ],
-  ""technologies"": ""mdm"",
-  ""templateReference"": {
-    ""templateFamily"": ""none""
-  },
-  ""settings"": [
+"Tamper Protection - Enabled","Finance","CSP","PIA - Finance - Defender Tamper Protection","{
+  ""@odata.type"": ""#microsoft.graph.windows10CustomConfiguration"",
+  ""displayName"": ""PIA - Finance - Defender Tamper Protection"",
+  ""description"": ""Enables Defender Tamper Protection via WindowsDefender CSP. Prevents users and malware from disabling AV, EDR and security settings. Value 5 = enabled. Satisfies Cyber Essentials malware protection requirement."",
+  ""roleScopeTagIds"": [""0""],
+  ""omaSettings"": [
     {
-      ""settingInstance"": {
-        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
-        ""settingDefinitionId"": ""device_vendor_msft_policy_config_defender_tamperprotection"",
-        ""choiceSettingValue"": {
-          ""value"": ""device_vendor_msft_policy_config_defender_tamperprotection_5"",
-          ""children"": []
-        }
-      }
-    },
-    {
-      ""settingInstance"": {
-        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
-        ""settingDefinitionId"": ""device_vendor_msft_policy_config_defender_enablecontrolledfolderaccess"",
-        ""choiceSettingValue"": {
-          ""value"": ""device_vendor_msft_policy_config_defender_enablecontrolledfolderaccess_2"",
-          ""children"": []
-        }
-      }
+      ""@odata.type"": ""#microsoft.graph.omaSettingInteger"",
+      ""displayName"": ""Tamper Protection - Enabled"",
+      ""description"": ""5 = Tamper Protection enabled"",
+      ""omaUri"": ""./Device/Vendor/MSFT/WindowsDefender/Configuration/TamperProtection"",
+      ""value"": 5
     }
   ]
-}","On","Def Tamper Protection (value 5 = enabled) to prevent users and malware disabling AV/EDR settings. Sets Controlled Folder Access to Audit mode (value 2) - monitor for LOB app to Block (value 1). C","Not Run","https://graph.microsoft.com/beta/deviceManagement/configurationPolicies","35"
+}","On","Enables Defender Tamper Protection via WindowsDefender CSP. Prevents users and malware from disabling AV, EDR and security settings. Value 5 = enabled. Satisfies Cyber Essentials malware protection requirement.","Not Run","https://graph.microsoft.com/v1.0/deviceManagement/deviceConfigurations","35"
+"Controlled Folder Access - Audit","Finance","CSP","PIA - Finance - Controlled Folder Access","{
+  ""@odata.type"": ""#microsoft.graph.windows10CustomConfiguration"",
+  ""displayName"": ""PIA - Finance - Controlled Folder Access"",
+  ""description"": ""Sets Controlled Folder Access to Audit mode (value 2). Monitor Event Viewer (Event ID 1124) for LOB app conflicts before switching to Block (value 1). Satisfies Cyber Essentials malware protection controls."",
+  ""roleScopeTagIds"": [""0""],
+  ""omaSettings"": [
+    {
+      ""@odata.type"": ""#microsoft.graph.omaSettingInteger"",
+      ""displayName"": ""Controlled Folder Access - Audit"",
+      ""description"": ""2 = Audit mode. Change to 1 for Block once Finance app compatibility confirmed."",
+      ""omaUri"": ""./Device/Vendor/MSFT/Policy/Config/Defender/EnableControlledFolderAccess"",
+      ""value"": 2
+    }
+  ]
+}","On","Sets Controlled Folder Access to Audit mode (value 2). Monitor Event Viewer (Event ID 1124) for LOB app conflicts before switching to Block (value 1). Satisfies Cyber Essentials malware protection controls","Not Run","https://graph.microsoft.com/v1.0/deviceManagement/deviceConfigurations","36"
