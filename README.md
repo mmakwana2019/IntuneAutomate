@@ -1,5 +1,3 @@
-[![Andy's GitHub stats](https://github-readme-stats.vercel.app/api?username=Croxleyboy)](https://github.com/anuraghazra/github-readme-stats)
-
 # IntuneAutomate - Now Live
 Simplify Key Microsoft Intune tasks using existing company skills and license investments. 
 
