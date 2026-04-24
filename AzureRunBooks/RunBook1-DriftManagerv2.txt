@@ -1,0 +1,473 @@
+#requires -Version 7.2
+
+# Runbook-UTCM-CA-DriftToSharePoint_v6_8_MonitorFix.ps1
+# Azure Automation PowerShell 7.2 runbook.
+# Uses Az.Accounts Managed Identity token + raw Microsoft Graph REST calls.
+# Writes UTCM Conditional Access drift records to SharePoint list UTCM_Drifts.
+# Maintains a monitor control record in UTCM_Monitors (creates if absent, updates on every run).
+# Respects 'New baseline' status set by Power App — does not overwrite it.
+#
+
+Set-StrictMode -Version 1.0
+$ErrorActionPreference = 'Stop'
+
+# -----------------------------
+# HARD-CODED CONFIG (no prompts)
+# -----------------------------
+$SiteRelativePath    = '/sites/IntuneAutomateProd'
+$DriftsListName      = 'UTCM_Drifts'
+$MonitorsListName    = 'UTCM_Monitors'
+$MaxItemsPerRun      = 200
+
+# UTCM
+$UtmcBase               = 'https://graph.microsoft.com/beta/admin/configurationManagement'
+$CaType                 = 'microsoft.entra.conditionalaccesspolicy'
+$PreferredCaMonitorName = 'CA Policy Monitor'
+
+# UTCM_Monitors Status values
+$StatusActive      = 'Active'
+$StatusDrifted     = 'Drifted'
+$StatusNewBaseline = 'New baseline'   # set by Power App — never overwritten here
+
+# -----------------------------
+# Auth via Managed Identity (Az.Accounts)
+# -----------------------------
+Import-Module Az.Accounts -ErrorAction Stop
+Write-Output 'STEP 0: Connect-AzAccount -Identity'
+Connect-AzAccount -Identity | Out-Null
+
+function Get-GraphToken {
+    (Get-AzAccessToken -ResourceUrl 'https://graph.microsoft.com/').Token
+}
+
+function Invoke-GraphWeb {
+    param(
+        [Parameter(Mandatory=$true)][ValidateSet('GET','POST','PATCH','DELETE')][string]$Method,
+        [Parameter(Mandatory=$true)][string]$Uri,
+        [Parameter(Mandatory=$false)][object]$Body
+    )
+
+    $token   = Get-GraphToken
+    $headers = @{ Authorization = "Bearer $token"; Accept = 'application/json' }
+
+    if ($Body) {
+        $json = $Body | ConvertTo-Json -Depth 25
+        Invoke-WebRequest -Method $Method -Uri $Uri -Headers $headers -ContentType 'application/json' -Body $json -SkipHttpErrorCheck
+    }
+    else {
+        Invoke-WebRequest -Method $Method -Uri $Uri -Headers $headers -SkipHttpErrorCheck
+    }
+}
+
+function Assert-Ok {
+    param(
+        [Parameter(Mandatory=$true)]$Resp,
+        [Parameter(Mandatory=$true)][string]$Step,
+        [Parameter(Mandatory=$true)][string]$Uri
+    )
+
+    if ($Resp.StatusCode -lt 200 -or $Resp.StatusCode -ge 300) {
+        Write-Output "❌ FAIL: $Step"
+        Write-Output "URL : $Uri"
+        Write-Output "HTTP: $($Resp.StatusCode)"
+        if ($Resp.Content) { Write-Output "BODY: $($Resp.Content)" }
+        throw "Stop on first failure: $Step"
+    }
+    Write-Output "✅ OK  : $Step (HTTP $($Resp.StatusCode))"
+}
+
+function Get-GraphPaged {
+    param([Parameter(Mandatory=$true)][string]$Uri)
+
+    $all  = New-Object System.Collections.Generic.List[object]
+    $next = $Uri
+
+    while ($next) {
+        $r = Invoke-GraphWeb -Method GET -Uri $next
+        # Out-Null prevents Assert-Ok's Write-Output polluting the caller's variable assignment
+        Assert-Ok $r 'Paged GET' $next | Out-Null
+        $obj = $r.Content | ConvertFrom-Json
+        if ($obj.value) { foreach ($v in $obj.value) { $all.Add($v) } }
+        $next = $obj.'@odata.nextLink'
+    }
+
+    return $all
+}
+
+function Escape-ODataString {
+    param([Parameter(Mandatory=$true)][string]$Value)
+    return $Value.Replace("'", "''")
+}
+
+function DriftId-Exists {
+    param(
+        [Parameter(Mandatory=$true)][string]$SiteId,
+        [Parameter(Mandatory=$true)][string]$ListId,
+        [Parameter(Mandatory=$true)][string]$DriftId
+    )
+
+    $escaped = Escape-ODataString $DriftId
+    $uri     = "https://graph.microsoft.com/v1.0/sites/$SiteId/lists/$ListId/items?`$top=1&`$expand=fields(`$select=DriftId)&`$filter=fields/DriftId eq '$escaped'"
+    $r       = Invoke-GraphWeb -Method GET -Uri $uri
+
+    if ($r.StatusCode -ge 200 -and $r.StatusCode -lt 300) {
+        $obj = $r.Content | ConvertFrom-Json
+        if ($obj.value -and $obj.value.Count -gt 0) {
+            foreach ($item in $obj.value) {
+                if ($item.fields -and $item.fields.DriftId -eq $DriftId) { return $true }
+            }
+        }
+        return $false
+    }
+
+    Write-Output "⚠️ WARN: DriftId filter query failed (HTTP $($r.StatusCode)). Falling back to client-side scan."
+    $scanUri = "https://graph.microsoft.com/v1.0/sites/$SiteId/lists/$ListId/items?`$top=200&`$expand=fields(`$select=DriftId)"
+    $items   = Get-GraphPaged -Uri $scanUri
+
+    foreach ($it in $items) {
+        if ($it.fields -and $it.fields.DriftId -eq $DriftId) { return $true }
+    }
+    return $false
+}
+
+function Get-MonitorListItem {
+    # Returns the SharePoint list item for a given MonitorId, or $null if not found.
+    # Guards against SharePoint internal system rows which have empty ids and no field data —
+    # these are returned when $filter is ignored on an unindexed column.
+    param(
+        [Parameter(Mandatory=$true)][string]$SiteId,
+        [Parameter(Mandatory=$true)][string]$ListId,
+        [Parameter(Mandatory=$true)][string]$MonitorId
+    )
+
+    $escaped = Escape-ODataString $MonitorId
+    $uri     = "https://graph.microsoft.com/v1.0/sites/$SiteId/lists/$ListId/items?`$top=10&`$expand=fields&`$filter=fields/MonitorId eq '$escaped'"
+    $r       = Invoke-GraphWeb -Method GET -Uri $uri
+
+    if ($r.StatusCode -ge 200 -and $r.StatusCode -lt 300) {
+        $obj = $r.Content | ConvertFrom-Json
+        if ($obj.value -and $obj.value.Count -gt 0) {
+            foreach ($item in $obj.value) {
+                # Guard: skip system rows (empty id) and rows where MonitorId does not actually match
+                if (-not $item.id) { continue }
+                if (-not $item.fields) { continue }
+                if ($item.fields.MonitorId -ne $MonitorId) { continue }
+                return $item
+            }
+        }
+    }
+    else {
+        Write-Output "⚠️ WARN: MonitorId filter query failed (HTTP $($r.StatusCode)). Falling back to client-side scan."
+    }
+
+    # Fallback: full client-side scan with same guards
+    $scanUri = "https://graph.microsoft.com/v1.0/sites/$SiteId/lists/$ListId/items?`$top=200&`$expand=fields"
+    $items   = Get-GraphPaged -Uri $scanUri
+
+    foreach ($it in $items) {
+        if (-not $it.id) { continue }
+        if (-not $it.fields) { continue }
+        if ($it.fields.MonitorId -eq $MonitorId) { return $it }
+    }
+
+    return $null
+}
+
+function Monitor-HasResourceType {
+    param(
+        [Parameter(Mandatory=$true)]$Monitor,
+        [Parameter(Mandatory=$true)][string]$ResourceType
+    )
+
+    if (-not $Monitor.configurationBaseline) { return $false }
+    if (-not $Monitor.configurationBaseline.resources) { return $false }
+
+    foreach ($res in $Monitor.configurationBaseline.resources) {
+        $t = $null
+        if ($res.PSObject.Properties.Name -contains '@odata.type') { $t = [string]$res.'@odata.type' }
+        if (-not $t) { continue }
+        if ($t.TrimStart('#') -eq $ResourceType) { return $true }
+    }
+    return $false
+}
+
+function Get-MonitorDetail {
+    param([Parameter(Mandatory=$true)][string]$MonitorId)
+
+    $uri = "$UtmcBase/configurationMonitors/$MonitorId"
+    $r   = Invoke-GraphWeb -Method GET -Uri $uri
+    Assert-Ok $r "Get monitor detail ($MonitorId)" $uri
+    return ($r.Content | ConvertFrom-Json)
+}
+
+function Resolve-ResourceName {
+    param([Parameter(Mandatory=$true)]$DriftObj)
+
+    # Prefer resourceInstanceIdentifier.DisplayName — clean policy name, no UTCM prefix/suffix
+    if ($DriftObj.PSObject.Properties.Name -contains 'resourceInstanceIdentifier') {
+        $rii = $DriftObj.resourceInstanceIdentifier
+        if ($rii -and $rii.PSObject.Properties.Name -contains 'DisplayName' -and $rii.DisplayName) {
+            return [string]$rii.DisplayName
+        }
+    }
+
+    foreach ($p in @('resourceDisplayName','baselineResourceDisplayName','displayName','resourceName')) {
+        if ($DriftObj.PSObject.Properties.Name -contains $p -and $DriftObj.$p) {
+            return [string]$DriftObj.$p
+        }
+    }
+    return 'Unknown policy'
+}
+
+# -----------------------------
+# STEP 1: Discover tenant hostname
+# -----------------------------
+$uri = 'https://graph.microsoft.com/v1.0/sites/root'
+Write-Output "STEP 1: GET $uri"
+$r = Invoke-GraphWeb -Method GET -Uri $uri
+Assert-Ok $r 'Discover SharePoint tenant hostname (/sites/root)' $uri
+$root       = $r.Content | ConvertFrom-Json
+$tenantHost = $root.siteCollection.hostname
+Write-Output "Tenant hostname detected: $tenantHost"
+
+# -----------------------------
+# STEP 2: Resolve target site by path
+# -----------------------------
+if ($SiteRelativePath -notmatch '^/') { $SiteRelativePath = "/$SiteRelativePath" }
+$uri = "https://graph.microsoft.com/v1.0/sites/${tenantHost}:${SiteRelativePath}"
+Write-Output "STEP 2: GET $uri"
+$r = Invoke-GraphWeb -Method GET -Uri $uri
+Assert-Ok $r 'Resolve target site by path' $uri
+$site   = $r.Content | ConvertFrom-Json
+$siteId = $site.id
+Write-Output "Resolved siteId: $siteId"
+
+# -----------------------------
+# STEP 3: Resolve list IDs
+# -----------------------------
+$uri = "https://graph.microsoft.com/v1.0/sites/$siteId/lists"
+Write-Output "STEP 3: GET $uri"
+$r = Invoke-GraphWeb -Method GET -Uri $uri
+Assert-Ok $r 'List SharePoint lists on target site' $uri
+$lists = ($r.Content | ConvertFrom-Json).value
+
+$driftsList = $lists | Where-Object { $_.displayName -eq $DriftsListName -or $_.name -eq $DriftsListName } | Select-Object -First 1
+if (-not $driftsList) {
+    Write-Output "Available lists:"
+    $lists | Sort-Object displayName | ForEach-Object { Write-Output ("- {0}" -f $_.displayName) }
+    throw "Target list not found: $DriftsListName"
+}
+$driftsListId = $driftsList.id
+Write-Output "Resolved drifts list  : $DriftsListName (id=$driftsListId)"
+
+$monitorsList = $lists | Where-Object { $_.displayName -eq $MonitorsListName -or $_.name -eq $MonitorsListName } | Select-Object -First 1
+if (-not $monitorsList) {
+    Write-Output "Available lists:"
+    $lists | Sort-Object displayName | ForEach-Object { Write-Output ("- {0}" -f $_.displayName) }
+    throw "Target list not found: $MonitorsListName"
+}
+$monitorsListId = $monitorsList.id
+Write-Output "Resolved monitors list: $MonitorsListName (id=$monitorsListId)"
+
+# -----------------------------
+# STEP 4: Discover UTCM Conditional Access monitor
+# -----------------------------
+$uri = "$UtmcBase/configurationMonitors"
+Write-Output "STEP 4: GET $uri"
+$monitors = Get-GraphPaged -Uri $uri
+$monitors  = @($monitors | Where-Object { $_ -and $_.id })
+Write-Output ("UTCM monitors returned (with ids): {0}" -f $monitors.Count)
+
+$caMonitor = $null
+
+# 4a) Exact displayName match — authoritative, no resource type validation needed
+$caMonitorSummary = $monitors | Where-Object { $_.displayName -eq $PreferredCaMonitorName } | Select-Object -First 1
+if ($caMonitorSummary) {
+    Write-Output ("CA monitor matched by exact displayName '{0}'." -f $PreferredCaMonitorName)
+    $caMonitor = Get-MonitorDetail -MonitorId $caMonitorSummary.id
+}
+
+# 4b) Fuzzy match — validate by resource type before accepting
+if (-not $caMonitor) {
+    $caMonitorSummary = $monitors | Where-Object {
+        ($_.displayName -match '\bCA\b' -or $_.displayName -match 'Conditional') -or
+        ($_.description -match 'Conditional' -or $_.description -match 'Entra')
+    } | Select-Object -First 1
+
+    if ($caMonitorSummary) {
+        $detail = Get-MonitorDetail -MonitorId $caMonitorSummary.id
+        if (Monitor-HasResourceType -Monitor $detail -ResourceType $CaType) {
+            $caMonitor = $detail
+        } else {
+            Write-Output ("⚠️ Fuzzy match '{0}' did not confirm resource type — continuing full scan." -f $caMonitorSummary.displayName)
+        }
+    }
+}
+
+# 4c) Full scan — last resort
+if (-not $caMonitor) {
+    Write-Output 'Inspecting all monitor details...'
+    foreach ($m in $monitors) {
+        $detail = Get-MonitorDetail -MonitorId $m.id
+        if (Monitor-HasResourceType -Monitor $detail -ResourceType $CaType) {
+            $caMonitor = $detail
+            break
+        }
+    }
+}
+
+if (-not $caMonitor) {
+    Write-Output 'Diagnostics: Monitor names returned:'
+    foreach ($m in $monitors) { Write-Output ("- {0} | id={1}" -f $m.displayName, $m.id) }
+    throw "No UTCM monitor found for resource type: $CaType"
+}
+
+$monitorId   = $caMonitor.id
+$monitorName = $caMonitor.displayName
+Write-Output "Using UTCM CA monitor: $monitorName ($monitorId)"
+
+# -----------------------------
+# STEP 5: Check UTCM_Monitors control record
+# -----------------------------
+Write-Output "STEP 5: Checking UTCM_Monitors control record for monitor $monitorId"
+$monitorListItem = Get-MonitorListItem -SiteId $siteId -ListId $monitorsListId -MonitorId $monitorId
+
+if ($monitorListItem) {
+    $currentStatus = $monitorListItem.fields.Status
+    Write-Output ("Monitor control record found (item id={0}) | Current Status: {1}" -f $monitorListItem.id, $currentStatus)
+
+    # Respect 'New baseline' — Power App has flagged this for baseline reset.
+    # Baseline reset is handled by a separate Power Automate flow.
+    # Skip drift evaluation until that flow clears the status.
+    if ($currentStatus -eq $StatusNewBaseline) {
+        Write-Output "⏭️ Status is '$StatusNewBaseline' — baseline reset pending via Power Automate. Skipping drift evaluation for this run."
+        Write-Output 'Run complete. Drift evaluation skipped — awaiting baseline reset.'
+        exit 0
+    }
+}
+else {
+    Write-Output 'No monitor control record found — will create after drift evaluation.'
+}
+
+# -----------------------------
+# STEP 6: Get drift findings for the monitor
+# -----------------------------
+$uri = "$UtmcBase/configurationDrifts?`$filter=monitorId eq '$monitorId'"
+Write-Output "STEP 6: GET $uri"
+$drifts = Get-GraphPaged -Uri $uri
+Write-Output ("UTCM drifts returned for monitor: {0}" -f $drifts.Count)
+
+# -----------------------------
+# STEP 7: Build drift items to write
+# -----------------------------
+$nowUtc = (Get-Date).ToUniversalTime()
+$usDate = $nowUtc.ToString('M/d/yyyy', [System.Globalization.CultureInfo]::InvariantCulture)
+$isoNow = $nowUtc.ToString('yyyy-MM-ddTHH:mm:ssZ')
+
+$itemsToWrite = New-Object System.Collections.Generic.List[hashtable]
+
+if ($drifts.Count -gt 0) {
+    foreach ($d in ($drifts | Select-Object -First $MaxItemsPerRun)) {
+        $driftId      = if ($d.id) { [string]$d.id } else { "DRIFT-$monitorId-$($nowUtc.ToString('yyyyMMddHHmmss'))" }
+        $resourceName = Resolve-ResourceName -DriftObj $d
+        Write-Output ("Drift record: DriftId={0} | Policy={1}" -f $driftId, $resourceName)
+
+        $itemsToWrite.Add(@{
+            Title                       = "UTCM $driftId"
+            DriftId                     = $driftId
+            MonitorId                   = $monitorId
+            Status                      = 'active'
+            ResourceType                = $CaType
+            BaselineResourceDisplayName = $resourceName
+            FirstReportedDateTime       = $usDate
+            LastSeenDateTime            = $usDate
+            DriftedPropertiesJson       = ($d | ConvertTo-Json -Depth 25 -Compress)
+        })
+    }
+}
+else {
+    $itemsToWrite.Add(@{
+        Title                       = "UTCM Clean $monitorName $($nowUtc.ToString('yyyyMMdd'))"
+        DriftId                     = "CLEAN-$monitorId-$($nowUtc.ToString('yyyyMMdd'))"
+        MonitorId                   = $monitorId
+        Status                      = 'clean'
+        ResourceType                = 'N/A — no drift detected'
+        BaselineResourceDisplayName = 'All resources match baseline'
+        FirstReportedDateTime       = $usDate
+        LastSeenDateTime            = $usDate
+        DriftedPropertiesJson       = (@{
+            result      = 'clean'
+            message     = 'No drift detected on this run. All monitored resources match their baseline configuration.'
+            monitorName = $monitorName
+            monitorId   = $monitorId
+            runDateTime = $nowUtc.ToString('o')
+        } | ConvertTo-Json -Compress)
+    })
+}
+
+# -----------------------------
+# STEP 8: Write to UTCM_Drifts with DriftId de-dupe
+# -----------------------------
+$written = 0
+$skipped = 0
+
+foreach ($item in $itemsToWrite) {
+    $exists = DriftId-Exists -SiteId $siteId -ListId $driftsListId -DriftId $item.DriftId
+    if ($exists) {
+        Write-Output "↩️ SKIP: DriftId already exists: $($item.DriftId)"
+        $skipped++
+        continue
+    }
+
+    $uri  = "https://graph.microsoft.com/v1.0/sites/$siteId/lists/$driftsListId/items"
+    $body = @{ fields = $item }
+    $r    = Invoke-GraphWeb -Method POST -Uri $uri -Body $body
+    Assert-Ok $r 'Create UTCM_Drifts list item' $uri
+    $written++
+}
+
+Write-Output ("UTCM_Drifts — Written: $written | Skipped (duplicate DriftId): $skipped")
+
+# -----------------------------
+# STEP 9: Create or update UTCM_Monitors control record
+# Always runs regardless of UTCM_Drifts written/skipped count.
+# Dedup only applies to drift records — monitor status reflects every run.
+# -----------------------------
+Write-Output 'STEP 9: Updating UTCM_Monitors control record'
+
+$newStatus     = if ($drifts.Count -gt 0) { $StatusDrifted } else { $StatusActive }
+$newDriftCount = $drifts.Count
+
+if ($monitorListItem -and $monitorListItem.id) {
+    # Update existing record — patch only the fields this runbook owns.
+    # LastBaselineDateTime is owned exclusively by the baseline reset flow.
+    $patchFields = @{
+        Status          = $newStatus
+        LastDriftCount  = $newDriftCount
+        LastRunDateTime = $isoNow
+    }
+    $patchUri = "https://graph.microsoft.com/v1.0/sites/$siteId/lists/$monitorsListId/items/$($monitorListItem.id)/fields"
+    $r        = Invoke-GraphWeb -Method PATCH -Uri $patchUri -Body $patchFields
+    Assert-Ok $r 'Update UTCM_Monitors control record' $patchUri
+    Write-Output ("UTCM_Monitors updated — Status: $newStatus | LastDriftCount: $newDriftCount")
+}
+else {
+    # Create new record
+    $createFields = @{
+        Title           = $monitorName
+        MonitorId       = $monitorId
+        MonitorName     = $monitorName
+        ResourceType    = $CaType
+        Status          = $newStatus
+        LastDriftCount  = $newDriftCount
+        LastRunDateTime = $isoNow
+        # LastBaselineDateTime intentionally omitted — unknown at creation time
+    }
+    $createUri  = "https://graph.microsoft.com/v1.0/sites/$siteId/lists/$monitorsListId/items"
+    $createBody = @{ fields = $createFields }
+    $r          = Invoke-GraphWeb -Method POST -Uri $createUri -Body $createBody
+    Assert-Ok $r 'Create UTCM_Monitors control record' $createUri
+    Write-Output ("UTCM_Monitors created — Status: $newStatus | LastDriftCount: $newDriftCount")
+}
+
+Write-Output "Run complete. Written: $written | Skipped (duplicate DriftId): $skipped"

@@ -1,0 +1,471 @@
+param(
+    [Parameter(Mandatory=$false)]
+    [string]$MonitorId = $null,
+    
+    [Parameter(Mandatory=$false)]
+    [string]$MonitorName = "CA Policy Monitor",
+    
+    [Parameter(Mandatory=$false)]
+    [bool]$ClearDriftsForMonitor = $true,
+    
+    [Parameter(Mandatory=$false)]
+    [string]$SiteRelativePath = '/sites/InFlowHR',
+    
+    [Parameter(Mandatory=$false)]
+    [string]$MonitorsListName = 'UTCM_Monitors',
+    
+    [Parameter(Mandatory=$false)]
+    [string]$DriftsListName = 'UTCM_Drifts'
+)
+
+Set-StrictMode -Version 2.0
+$ErrorActionPreference = 'Stop'
+
+Write-Output "Starting UTCM Rebaseline"
+Write-Output "MonitorName: $MonitorName"
+if ($MonitorId) { Write-Output "MonitorId (provided): $MonitorId" }
+
+# --------------------------------------------------
+# GRAPH / UTCM CONFIG
+# --------------------------------------------------
+$GraphV1   = 'https://graph.microsoft.com/v1.0'
+$GraphBeta = 'https://graph.microsoft.com/beta'
+$UtmcBase  = "$GraphBeta/admin/configurationManagement"
+$CaType    = 'microsoft.entra.conditionalaccesspolicy'
+
+$UtcNow    = (Get-Date).ToUniversalTime()
+$DateStamp    = $UtcNow.ToString('ddMMyyyy HHmm')
+$SnapshotName = "CA Baseline $DateStamp"
+
+$PollIntervalSeconds = 10
+$PollTimeoutSeconds  = 300
+
+# --------------------------------------------------
+# AUTH (Managed Identity)
+# --------------------------------------------------
+try {
+    Import-Module Az.Accounts -ErrorAction Stop
+    Write-Output "Authenticating with Managed Identity..."
+    Connect-AzAccount -Identity -ErrorAction Stop | Out-Null
+    Write-Output "✓ Authentication successful"
+}
+catch {
+    throw "Failed to authenticate with managed identity: $_"
+}
+
+function Invoke-GraphCall {
+    param(
+        [string]$Method,
+        [string]$Uri,
+        [object]$Body = $null,
+        [int]$RetryCount = 3,
+        [int]$RetryDelaySeconds = 5
+    )
+
+    $attempt = 1
+    while ($attempt -le $RetryCount) {
+        try {
+            $token = (Get-AzAccessToken -ResourceUrl 'https://graph.microsoft.com/').Token
+            $headers = @{
+                Authorization = "Bearer $token"
+                "Content-Type" = "application/json"
+            }
+            
+            if ($null -ne $Body) {
+                $response = Invoke-WebRequest -Method $Method -Uri $Uri -Headers $headers `
+                    -Body ($Body | ConvertTo-Json -Depth 20) `
+                    -SkipHttpErrorCheck
+            }
+            else {
+                $response = Invoke-WebRequest -Method $Method -Uri $Uri -Headers $headers `
+                    -SkipHttpErrorCheck
+            }
+            
+            if ($response.StatusCode -lt 200 -or $response.StatusCode -ge 300) {
+                throw "HTTP $($response.StatusCode): $($response.Content)"
+            }
+            
+            if ($response.Content) {
+                return ($response.Content | ConvertFrom-Json)
+            }
+            return $null
+        }
+        catch {
+            if ($attempt -lt $RetryCount) {
+                Write-Output "    ⚠ Request failed, retrying in $RetryDelaySeconds seconds (attempt $attempt/$RetryCount)..."
+                Start-Sleep -Seconds $RetryDelaySeconds
+                $attempt++
+                continue
+            }
+            throw "Graph API call failed after $RetryCount attempts: $_"
+        }
+    }
+}
+
+# --------------------------------------------------
+# STEP 0: Discover MonitorId if not provided
+# --------------------------------------------------
+if (-not $MonitorId) {
+    Write-Output "Step 0: Discovering monitor by name '$MonitorName'..."
+    $response = Invoke-GraphCall GET "$UtmcBase/configurationMonitors"
+    $monitors = @($response.value)
+    
+    $targetMonitor = $monitors | Where-Object { $_.displayName -eq $MonitorName } | Select-Object -First 1
+    
+    if ($targetMonitor) {
+        $MonitorId = $targetMonitor.id
+        Write-Output "✓ Discovered MonitorId: $MonitorId"
+    }
+    else {
+        Write-Output "✘ Monitor not found with name: $MonitorName"
+        Write-Output "Available monitors:"
+        foreach ($m in $monitors) {
+            Write-Output "  - $($m.displayName) (id: $($m.id))"
+        }
+        throw "Could not find monitor by name: $MonitorName"
+    }
+}
+
+Write-Output "Using MonitorId: $MonitorId`n"
+
+# --------------------------------------------------
+# STEP 1: Resolve SharePoint Site + Lists
+# --------------------------------------------------
+Write-Output "Step 1: Resolving SharePoint site and lists..."
+$rootSite = Invoke-GraphCall GET "$GraphV1/sites/root"
+$tenantHost = $rootSite.siteCollection.hostname
+
+if ($SiteRelativePath -notmatch '^/') {
+    $SiteRelativePath = "/$SiteRelativePath"
+}
+
+$siteUri = "$GraphV1/sites/${tenantHost}:$SiteRelativePath"
+$site = Invoke-GraphCall GET $siteUri
+$siteId = $site.id
+
+$listsUri = "$GraphV1/sites/$siteId/lists"
+$listsResponse = Invoke-GraphCall GET $listsUri
+$lists = @($listsResponse.value)
+
+$monList = $lists | Where-Object { $_.displayName -eq $MonitorsListName } | Select-Object -First 1
+$drfList = $lists | Where-Object { $_.displayName -eq $DriftsListName } | Select-Object -First 1
+
+if (-not $monList) { throw "UTCM_Monitors list not found" }
+if (-not $drfList) { throw "UTCM_Drifts list not found" }
+
+# Get field definitions
+Write-Output "Retrieving field definitions..."
+$fieldsUri = "$GraphV1/sites/$siteId/lists/$($monList.id)/columns"
+$columnsResponse = Invoke-GraphCall GET $fieldsUri
+$columns = @($columnsResponse.value)
+
+$fieldMap = @{}
+$readOnlyFields = @()
+
+foreach ($col in $columns | Where-Object { -not $_.hidden }) {
+    $fieldMap[$col.displayName] = $col.name
+    if ($col.readOnly) {
+        $readOnlyFields += $col.displayName
+    }
+}
+
+Write-Output "✓ Site and lists resolved"
+
+# --------------------------------------------------
+# STEP 2: Find Existing Monitor Record & Check Validity
+# --------------------------------------------------
+Write-Output "Step 2: Checking for existing monitor record..."
+
+$itemsUri = "$GraphV1/sites/$siteId/lists/$($monList.id)/items?`$expand=fields"
+$itemsResponse = Invoke-GraphCall GET $itemsUri
+$allItems = @($itemsResponse.value)
+
+$existingItem = $allItems | Where-Object { $_.fields.MonitorId -eq $MonitorId } | Select-Object -First 1
+
+if ($existingItem) {
+    Write-Output "  Found existing SharePoint record ID: $($existingItem.id)"
+    
+    # Check if the monitor still exists in Tenant Governance
+    $monitorsResponse = Invoke-GraphCall GET "$UtmcBase/configurationMonitors"
+    $monitors = @($monitorsResponse.value)
+    $tenantMonitor = $monitors | Where-Object { $_.id -eq $MonitorId }
+    
+    if ($tenantMonitor) {
+        Write-Output "  ✓ Monitor exists in Tenant Governance — will update record"
+        $monitorItemId = $existingItem.id
+        $isUpdate = $true
+    }
+    else {
+        Write-Output "  ⚠ Monitor no longer exists in Tenant Governance"
+        Write-Output "  Deleting orphaned SharePoint record..."
+        
+        $delUri = "$GraphV1/sites/$siteId/lists/$($monList.id)/items/$($existingItem.id)"
+        Invoke-GraphCall DELETE $delUri | Out-Null
+        
+        Write-Output "  ✓ Deleted orphaned SharePoint record"
+        $monitorItemId = $null
+        $isUpdate = $false
+    }
+}
+else {
+    Write-Output "✓ No existing monitor record found — will create new"
+    $monitorItemId = $null
+    $isUpdate = $false
+}
+
+# --------------------------------------------------
+# STEP 3: Delete Existing Monitor in Tenant Governance
+# --------------------------------------------------
+Write-Output "Step 3: Deleting existing monitor in Tenant Governance..."
+$monitorsResponse = Invoke-GraphCall GET "$UtmcBase/configurationMonitors"
+$monitors = @($monitorsResponse.value)
+
+# Delete by MonitorId
+$existingMonitor = $monitors | Where-Object { $_.id -eq $MonitorId } | Select-Object -First 1
+
+if ($existingMonitor) {
+    $delUri = "$UtmcBase/configurationMonitors/$($existingMonitor.id)"
+    Write-Output "  Deleting monitor by ID: $($existingMonitor.id)"
+    Invoke-GraphCall DELETE $delUri | Out-Null
+    Write-Output "✓ Deleted existing monitor by ID"
+    
+    # Wait for deletion to propagate
+    Write-Output "  Waiting for deletion to propagate..."
+    Start-Sleep -Seconds 5
+}
+else {
+    Write-Output "✓ No existing monitor found by ID"
+}
+
+# Also delete any monitor with the same display name (to avoid 409 conflicts)
+$nameConflictMonitor = $monitors | Where-Object { $_.displayName -eq $MonitorName -and $_.id -ne $MonitorId } | Select-Object -First 1
+
+if ($nameConflictMonitor) {
+    $delUri = "$UtmcBase/configurationMonitors/$($nameConflictMonitor.id)"
+    Write-Output "  Deleting name conflict monitor: $($nameConflictMonitor.id)"
+    Invoke-GraphCall DELETE $delUri | Out-Null
+    Write-Output "✓ Deleted name conflict monitor"
+    Start-Sleep -Seconds 5
+}
+else {
+    Write-Output "✓ No name conflict monitors found"
+}
+
+# --------------------------------------------------
+# STEP 4: Create New Snapshot
+# --------------------------------------------------
+Write-Output "Step 4: Creating new CA snapshot..."
+Write-Output "  (Old snapshots will expire automatically — not deleting)"
+
+$body = @{
+    displayName = $SnapshotName
+    resources   = @($CaType)
+}
+
+$snapshotResponse = Invoke-GraphCall POST "$UtmcBase/configurationSnapshots/createSnapshot" $body
+$SnapshotJobId = $snapshotResponse.id
+Write-Output "✓ Created snapshot job: $SnapshotJobId"
+
+# --------------------------------------------------
+# STEP 5: Poll Snapshot Job Until Completion
+# --------------------------------------------------
+Write-Output "Step 5: Polling snapshot job status..."
+$elapsed = 0
+$SnapshotLocation = '[job-expired]'
+$finalStatus = 'unknown'
+
+while ($elapsed -lt $PollTimeoutSeconds) {
+    Start-Sleep $PollIntervalSeconds
+    $elapsed += $PollIntervalSeconds
+
+    $jobUri = "$UtmcBase/configurationSnapshotJobs/$SnapshotJobId"
+    $job = Invoke-GraphCall GET $jobUri -RetryCount 3 -RetryDelaySeconds 5
+    $finalStatus = $job.status
+
+    Write-Output "  Status: $finalStatus (elapsed: $elapsed/$PollTimeoutSeconds seconds)"
+
+    if ($finalStatus -in @('succeeded','partiallySuccessful')) {
+        if ($job.resourceLocation) {
+            $SnapshotLocation = $job.resourceLocation
+        }
+        Write-Output "✓ Snapshot job completed with status: $finalStatus"
+        break
+    }
+
+    if ($finalStatus -eq 'failed') {
+        throw "Snapshot job failed: $($job.error)"
+    }
+}
+
+if ($elapsed -ge $PollTimeoutSeconds) {
+    Write-Output "⚠ WARNING: Snapshot job did not complete within timeout period ($PollTimeoutSeconds seconds)"
+}
+
+# --------------------------------------------------
+# STEP 6: Retrieve and Validate Snapshot Data
+# --------------------------------------------------
+Write-Output "Step 6: Retrieving and validating snapshot data..."
+
+# Extract the snapshot ID from the location URI
+$snapshotId = $SnapshotLocation -replace ".*configurationSnapshots\('([^']+)'\).*", '$1'
+Write-Output "  Snapshot ID from job: $snapshotId"
+
+# Retrieve the actual snapshot data
+$snapshotUri = "$UtmcBase/configurationSnapshots('$snapshotId')"
+$snapshotData = Invoke-GraphCall GET $snapshotUri -RetryCount 3 -RetryDelaySeconds 5
+
+Write-Output "  Retrieved snapshot: $($snapshotData.displayName)"
+Write-Output "    Resources in baseline: $($snapshotData.resources.Count) items"
+
+# CRITICAL: Verify this is the snapshot we just created
+if ($snapshotData.id -ne $snapshotId) {
+    throw "❌ SNAPSHOT ID MISMATCH!"
+    throw "Expected: $snapshotId"
+    throw "Got: $($snapshotData.id)"
+}
+
+# CRITICAL: Verify it has resources (not empty baseline)
+if (-not $snapshotData.resources -or $snapshotData.resources.Count -eq 0) {
+    throw "❌ SNAPSHOT HAS EMPTY BASELINE!"
+    throw "This snapshot contains no resources and cannot be used to create a monitor."
+    throw "Ensure CA policies exist in your tenant before creating a snapshot."
+}
+
+Write-Output "  ✓ Snapshot validated successfully"
+Write-Output "  ✓ Using latest snapshot from job: $SnapshotJobId"
+
+# --------------------------------------------------
+# STEP 7: Create Monitor from Latest Snapshot
+# --------------------------------------------------
+Write-Output "Step 7: Creating new monitor in Tenant Governance..."
+
+# Build the baseline object from the snapshot data
+$baseline = @{
+    displayName = $snapshotData.displayName
+    description = $snapshotData.description
+    parameters = $snapshotData.parameters
+    resources = $snapshotData.resources
+}
+
+# Create the monitor with the baseline
+$monitorBody = @{
+    displayName = $MonitorName
+    description = "UTCM monitor for Entra Conditional Access Policies"
+    baseline = $baseline
+}
+
+Write-Output "  Creating monitor with baseline..."
+Write-Output "    Monitor Name: $MonitorName"
+Write-Output "    Baseline Resources: $($baseline.resources.Count) items"
+
+$newMonitorResponse = Invoke-GraphCall POST "$UtmcBase/configurationMonitors" $monitorBody -RetryCount 3 -RetryDelaySeconds 5
+$newMonitorId = $newMonitorResponse.id
+
+Write-Output "✓ Created new monitor in Tenant Governance: $newMonitorId"
+
+# --------------------------------------------------
+# STEP 8: Upsert Monitor Record in SharePoint
+# --------------------------------------------------
+if ($isUpdate) {
+    Write-Output "Step 8: Updating existing SharePoint monitor record..."
+}
+else {
+    Write-Output "Step 8: Creating new SharePoint monitor record..."
+}
+
+$fields = @{}
+
+$fieldMappings = @{
+    'Status'                   = 'Clean'
+    'MonitorId'                = $newMonitorId
+    'MonitorName'              = $MonitorName
+    'ResourceType'             = $CaType
+    'LastRunDateTime'          = $UtcNow.ToString('o')
+    'LastBaselineDateTime'     = $UtcNow.ToString('o')
+    'LastDriftCount'           = 0
+}
+
+if (-not $isUpdate) {
+    $fieldMappings['Title'] = $MonitorName
+}
+
+foreach ($displayName in $fieldMappings.Keys) {
+    if ($readOnlyFields -contains $displayName) {
+        continue
+    }
+    
+    if ($fieldMap.ContainsKey($displayName)) {
+        $internalName = $fieldMap[$displayName]
+        $value = $fieldMappings[$displayName]
+        $fields[$internalName] = $value
+        Write-Output "  Setting field: $displayName = $value"
+    }
+    else {
+        Write-Output "  ⚠ Field not found in SharePoint: $displayName"
+    }
+}
+
+if ($isUpdate) {
+    $updateUri = "$GraphV1/sites/$siteId/lists/$($monList.id)/items/$monitorItemId"
+    Invoke-GraphCall PATCH $updateUri @{ fields = $fields } -RetryCount 3 -RetryDelaySeconds 5 | Out-Null
+    Write-Output "✓ Updated SharePoint monitor record with ID: $monitorItemId"
+    $finalItemId = $monitorItemId
+}
+else {
+    $createUri = "$GraphV1/sites/$siteId/lists/$($monList.id)/items"
+    $newItem = Invoke-GraphCall POST $createUri @{ fields = $fields } -RetryCount 3 -RetryDelaySeconds 5
+    $finalItemId = $newItem.id
+    Write-Output "✓ Created new SharePoint monitor record with ID: $finalItemId"
+}
+
+# --------------------------------------------------
+# STEP 9: Clear Associated Drifts for this Monitor
+# --------------------------------------------------
+if ($ClearDriftsForMonitor) {
+    Write-Output "Step 9: Clearing associated drift records..."
+    $driftsUri = "$GraphV1/sites/$siteId/lists/$($drfList.id)/items?`$expand=fields"
+    $driftsResponse = Invoke-GraphCall GET $driftsUri
+    $allDrifts = @($driftsResponse.value)
+
+    $drifts = $allDrifts | Where-Object { $_.fields.MonitorId -eq $newMonitorId }
+
+    $deletedCount = 0
+    foreach ($d in $drifts) {
+        $delUri = "$GraphV1/sites/$siteId/lists/$($drfList.id)/items/$($d.id)"
+        Write-Output "  Deleting drift record: $($d.id)"
+        Invoke-GraphCall DELETE $delUri | Out-Null
+        $deletedCount++
+    }
+    
+    if ($deletedCount -gt 0) {
+        Write-Output "✓ Deleted $deletedCount drift record(s)"
+    }
+    else {
+        Write-Output "✓ No drift records found for this monitor"
+    }
+}
+
+# --------------------------------------------------
+# OUTPUT SUMMARY
+# --------------------------------------------------
+Write-Output ""
+Write-Output "========================================="
+Write-Output "UTCM REBASELINE COMPLETED SUCCESSFULLY"
+Write-Output "========================================="
+
+[pscustomobject]@{
+    Success                    = $true
+    Operation                  = if ($isUpdate) { 'Updated' } else { 'Created' }
+    TenantGovernanceMonitorId  = $newMonitorId
+    SharePointMonitorItemId    = $finalItemId
+    MonitorName                = $MonitorName
+    SnapshotJobId              = $SnapshotJobId
+    SnapshotStatus             = $finalStatus
+    SnapshotId                 = $snapshotId
+    Status                     = 'Clean'
+    LastRunDateTime            = $UtcNow.ToString('o')
+    LastBaselineDateTime       = $UtcNow.ToString('o')
+    ResourceType               = $CaType
+    BaselineResourceCount      = $snapshotData.resources.Count
+    DriftsCleared              = if ($ClearDriftsForMonitor) { $deletedCount } else { 'N/A' }
+} | Format-List

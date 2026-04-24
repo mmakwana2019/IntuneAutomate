@@ -1,0 +1,919 @@
+﻿ListSchema={"schemaXmlList":["<Field ID=\"{fa564e0f-0c70-4ab9-b863-0177e6ddd247}\" Type=\"Text\" Name=\"Title\" DisplayName=\"Title\" Required=\"TRUE\" SourceID=\"http://schemas.microsoft.com/sharepoint/v3\" StaticName=\"Title\" FromBaseType=\"TRUE\" />","<Field CustomFormatter=\"{&quot;elmType&quot;:&quot;div&quot;,&quot;style&quot;:{&quot;flex-wrap&quot;:&quot;wrap&quot;,&quot;display&quot;:&quot;flex&quot;},&quot;children&quot;:[{&quot;elmType&quot;:&quot;div&quot;,&quot;style&quot;:{&quot;box-sizing&quot;:&quot;border-box&quot;,&quot;padding&quot;:&quot;4px 8px 5px 8px&quot;,&quot;overflow&quot;:&quot;hidden&quot;,&quot;text-overflow&quot;:&quot;ellipsis&quot;,&quot;display&quot;:&quot;flex&quot;,&quot;border-radius&quot;:&quot;16px&quot;,&quot;height&quot;:&quot;24px&quot;,&quot;align-items&quot;:&quot;center&quot;,&quot;white-space&quot;:&quot;nowrap&quot;,&quot;margin&quot;:&quot;4px 4px 4px 4px&quot;},&quot;attributes&quot;:{&quot;class&quot;:{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;Retail&quot;]},&quot;sp-css-backgroundColor-BgCornflowerBlue sp-field-fontSizeSmall sp-css-color-CornflowerBlueFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;Finance&quot;]},&quot;sp-css-backgroundColor-BgMintGreen sp-field-fontSizeSmall sp-css-color-MintGreenFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;Healthcare&quot;]},&quot;sp-css-backgroundColor-BgGold sp-field-fontSizeSmall sp-css-color-GoldFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;&quot;]},&quot;&quot;,&quot;sp-field-borderAllRegular sp-field-borderAllSolid sp-css-borderColor-neutralSecondary&quot;]}]}]}]}},&quot;children&quot;:[{&quot;elmType&quot;:&quot;span&quot;,&quot;style&quot;:{&quot;overflow&quot;:&quot;hidden&quot;,&quot;text-overflow&quot;:&quot;ellipsis&quot;,&quot;padding&quot;:&quot;0 3px&quot;},&quot;txtContent&quot;:&quot;@currentField&quot;,&quot;attributes&quot;:{&quot;class&quot;:{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;Retail&quot;]},&quot;sp-field-fontSizeSmall sp-css-color-CornflowerBlueFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;Finance&quot;]},&quot;sp-field-fontSizeSmall sp-css-color-MintGreenFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;Healthcare&quot;]},&quot;sp-field-fontSizeSmall sp-css-color-GoldFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;&quot;]},&quot;&quot;,&quot;&quot;]}]}]}]}}}]}],&quot;templateId&quot;:&quot;BgColorChoicePill&quot;}\" DisplayName=\"PersonaType\" FillInChoice=\"FALSE\" Format=\"Dropdown\" IsModern=\"TRUE\" Name=\"PersonaType\" Title=\"PersonaType\" Type=\"Choice\" ID=\"{008e3c99-10e8-45dd-a9e8-a14ce9670a2e}\" StaticName=\"PersonaType\"><CHOICES><CHOICE>Retail</CHOICE><CHOICE>Finance</CHOICE><CHOICE>Healthcare</CHOICE></CHOICES></Field>","<Field ClientSideComponentId=\"00000000-0000-0000-0000-000000000000\" CustomFormatter=\"{&quot;elmType&quot;:&quot;div&quot;,&quot;style&quot;:{&quot;flex-wrap&quot;:&quot;wrap&quot;,&quot;display&quot;:&quot;flex&quot;},&quot;children&quot;:[{&quot;elmType&quot;:&quot;div&quot;,&quot;style&quot;:{&quot;box-sizing&quot;:&quot;border-box&quot;,&quot;padding&quot;:&quot;4px 8px 5px 8px&quot;,&quot;overflow&quot;:&quot;hidden&quot;,&quot;text-overflow&quot;:&quot;ellipsis&quot;,&quot;display&quot;:&quot;flex&quot;,&quot;border-radius&quot;:&quot;16px&quot;,&quot;height&quot;:&quot;24px&quot;,&quot;align-items&quot;:&quot;center&quot;,&quot;white-space&quot;:&quot;nowrap&quot;,&quot;margin&quot;:&quot;4px 4px 4px 4px&quot;},&quot;attributes&quot;:{&quot;class&quot;:{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$PolicyType]&quot;,&quot;config&quot;]},&quot;sp-css-backgroundColor-BgCornflowerBlue sp-css-color-CornflowerBlueFont sp-css-color-CornflowerBlueFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$PolicyType]&quot;,&quot;conditionalaccess&quot;]},&quot;sp-css-backgroundColor-BgMintGreen sp-css-color-MintGreenFont sp-css-color-MintGreenFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$PolicyType]&quot;,&quot;Application&quot;]},&quot;sp-css-backgroundColor-BgGold sp-css-color-GoldFont sp-css-color-GoldFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$PolicyType]&quot;,&quot;&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$PolicyType]&quot;,&quot;compliance&quot;]},&quot;sp-css-backgroundColor-BgCoral sp-css-color-CoralFont sp-css-color-CoralFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$PolicyType]&quot;,&quot;security&quot;]},&quot;sp-css-backgroundColor-BgDustRose sp-css-color-DustRoseFont sp-css-color-DustRoseFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$PolicyType]&quot;,&quot;WinUpdate&quot;]},&quot;sp-css-backgroundColor-BgCyan sp-css-color-CyanFont sp-css-color-CyanFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$PolicyType]&quot;,&quot;Android&quot;]},&quot;sp-css-backgroundColor-BgPeach sp-css-color-PeachFont sp-css-color-PeachFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$PolicyType]&quot;,&quot;iOS&quot;]},&quot;sp-css-backgroundColor-BgSage sp-css-color-SageFont sp-css-color-SageFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$PolicyType]&quot;,&quot;CSP&quot;]},&quot;sp-css-backgroundColor-BgLightPurple sp-css-color-LightPurpleFont sp-css-color-LightPurpleFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$PolicyType]&quot;,&quot;Other&quot;]},&quot;sp-css-backgroundColor-BgViolet sp-field-fontSizeSmall sp-css-color-VioletFont sp-css-color-VioletFont&quot;,&quot;sp-field-borderAllRegular sp-field-borderAllSolid sp-css-borderColor-neutralSecondary&quot;]}]}]}]}]}]}]}]}]}]}]}},&quot;children&quot;:[{&quot;elmType&quot;:&quot;span&quot;,&quot;style&quot;:{&quot;overflow&quot;:&quot;hidden&quot;,&quot;text-overflow&quot;:&quot;ellipsis&quot;,&quot;padding&quot;:&quot;0 3px&quot;},&quot;txtContent&quot;:&quot;[$PolicyType]&quot;,&quot;attributes&quot;:{&quot;class&quot;:{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$PolicyType]&quot;,&quot;config&quot;]},&quot;sp-css-color-CornflowerBlueFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$PolicyType]&quot;,&quot;conditionalaccess&quot;]},&quot;sp-css-color-MintGreenFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$PolicyType]&quot;,&quot;Application&quot;]},&quot;sp-css-color-GoldFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$PolicyType]&quot;,&quot;&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$PolicyType]&quot;,&quot;compliance&quot;]},&quot;sp-css-color-CoralFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$PolicyType]&quot;,&quot;security&quot;]},&quot;sp-css-color-DustRoseFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$PolicyType]&quot;,&quot;WinUpdate&quot;]},&quot;sp-css-color-CyanFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$PolicyType]&quot;,&quot;Android&quot;]},&quot;sp-css-color-PeachFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$PolicyType]&quot;,&quot;iOS&quot;]},&quot;sp-css-color-SageFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$PolicyType]&quot;,&quot;CSP&quot;]},&quot;sp-css-color-LightPurpleFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$PolicyType]&quot;,&quot;Other&quot;]},&quot;sp-field-fontSizeSmall sp-css-color-VioletFont&quot;,&quot;&quot;]}]}]}]}]}]}]}]}]}]}]}}}]}],&quot;templateId&quot;:&quot;BgColorChoicePill&quot;}\" DisplayName=\"PolicyType\" FillInChoice=\"FALSE\" Format=\"Dropdown\" Name=\"PolicyType\" Title=\"PolicyType\" Type=\"Choice\" ID=\"{5fd4cc53-287d-4ff9-bc50-0846696d6a2b}\" StaticName=\"PolicyType\"><CHOICES><CHOICE>config</CHOICE><CHOICE>conditionalaccess</CHOICE><CHOICE>Application</CHOICE><CHOICE>compliance</CHOICE><CHOICE>security</CHOICE><CHOICE>WinUpdate</CHOICE><CHOICE>Android</CHOICE><CHOICE>iOS</CHOICE><CHOICE>CSP</CHOICE><CHOICE>Other</CHOICE></CHOICES></Field>","<Field AppendOnly=\"FALSE\" DisplayName=\"PolicyJSON\" Format=\"Dropdown\" IsModern=\"TRUE\" IsolateStyles=\"FALSE\" Name=\"PolicyJSON\" RichText=\"FALSE\" RichTextMode=\"Compatible\" Title=\"PolicyJSON\" Type=\"Note\" ID=\"{54d57af8-6ee6-4091-8676-799298a0fa98}\" StaticName=\"PolicyJSON\" />","<Field ClientSideComponentId=\"00000000-0000-0000-0000-000000000000\" CustomFormatter=\"{&quot;elmType&quot;:&quot;div&quot;,&quot;style&quot;:{&quot;flex-wrap&quot;:&quot;wrap&quot;,&quot;display&quot;:&quot;flex&quot;},&quot;children&quot;:[{&quot;elmType&quot;:&quot;div&quot;,&quot;style&quot;:{&quot;box-sizing&quot;:&quot;border-box&quot;,&quot;padding&quot;:&quot;4px 8px 5px 8px&quot;,&quot;overflow&quot;:&quot;hidden&quot;,&quot;text-overflow&quot;:&quot;ellipsis&quot;,&quot;display&quot;:&quot;flex&quot;,&quot;border-radius&quot;:&quot;16px&quot;,&quot;height&quot;:&quot;24px&quot;,&quot;align-items&quot;:&quot;center&quot;,&quot;white-space&quot;:&quot;nowrap&quot;,&quot;margin&quot;:&quot;4px 4px 4px 4px&quot;},&quot;attributes&quot;:{&quot;class&quot;:{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Status]&quot;,&quot;Off&quot;]},&quot;sp-css-backgroundColor-BgCornflowerBlue sp-css-color-CornflowerBlueFont sp-css-color-CornflowerBlueFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Status]&quot;,&quot;On&quot;]},&quot;sp-css-backgroundColor-BgMintGreen sp-css-color-MintGreenFont sp-css-color-MintGreenFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Status]&quot;,&quot;Delete&quot;]},&quot;sp-css-backgroundColor-BgGold sp-css-color-GoldFont sp-css-color-GoldFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Status]&quot;,&quot;&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Status]&quot;,&quot;OnHold&quot;]},&quot;sp-css-backgroundColor-BgCoral sp-css-color-CoralFont sp-css-color-CoralFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Status]&quot;,&quot;Deployed&quot;]},&quot;sp-css-backgroundColor-BgDarkGreen sp-css-borderColor-WhiteFont sp-field-fontSizeSmall sp-css-color-WhiteFont sp-css-color-WhiteFont&quot;,&quot;sp-field-borderAllRegular sp-field-borderAllSolid sp-css-borderColor-neutralSecondary&quot;]}]}]}]}]}]}},&quot;children&quot;:[{&quot;elmType&quot;:&quot;span&quot;,&quot;style&quot;:{&quot;overflow&quot;:&quot;hidden&quot;,&quot;text-overflow&quot;:&quot;ellipsis&quot;,&quot;padding&quot;:&quot;0 3px&quot;},&quot;txtContent&quot;:&quot;[$Status]&quot;,&quot;attributes&quot;:{&quot;class&quot;:{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Status]&quot;,&quot;Off&quot;]},&quot;sp-css-color-CornflowerBlueFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Status]&quot;,&quot;On&quot;]},&quot;sp-css-color-MintGreenFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Status]&quot;,&quot;Delete&quot;]},&quot;sp-css-color-GoldFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Status]&quot;,&quot;&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Status]&quot;,&quot;OnHold&quot;]},&quot;sp-css-color-CoralFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Status]&quot;,&quot;Deployed&quot;]},&quot;sp-field-fontSizeSmall sp-css-color-WhiteFont&quot;,&quot;&quot;]}]}]}]}]}]}}}]}],&quot;templateId&quot;:&quot;BgColorChoicePill&quot;}\" DisplayName=\"Status\" FillInChoice=\"FALSE\" Format=\"Dropdown\" Name=\"Status\" Title=\"Status\" Type=\"Choice\" ID=\"{42d3e2f6-970c-4b5e-a591-1a5eed34a0ae}\" StaticName=\"Status\"><CHOICES><CHOICE>Off</CHOICE><CHOICE>On</CHOICE><CHOICE>Delete</CHOICE><CHOICE>OnHold</CHOICE><CHOICE>Deployed</CHOICE></CHOICES><Default>Off</Default></Field>","<Field DisplayName=\"Desc\" Format=\"Dropdown\" IsModern=\"TRUE\" MaxLength=\"255\" Name=\"Desc\" Title=\"Desc\" Type=\"Text\" ID=\"{0f715c88-9b88-4104-82cb-ccdfc5077c74}\" StaticName=\"Desc\" />","<Field ClientSideComponentId=\"00000000-0000-0000-0000-000000000000\" CustomFormatter=\"{&quot;elmType&quot;:&quot;div&quot;,&quot;style&quot;:{&quot;flex-wrap&quot;:&quot;wrap&quot;,&quot;display&quot;:&quot;flex&quot;},&quot;children&quot;:[{&quot;elmType&quot;:&quot;div&quot;,&quot;style&quot;:{&quot;box-sizing&quot;:&quot;border-box&quot;,&quot;padding&quot;:&quot;4px 8px 5px 8px&quot;,&quot;overflow&quot;:&quot;hidden&quot;,&quot;text-overflow&quot;:&quot;ellipsis&quot;,&quot;display&quot;:&quot;flex&quot;,&quot;border-radius&quot;:&quot;16px&quot;,&quot;height&quot;:&quot;24px&quot;,&quot;align-items&quot;:&quot;center&quot;,&quot;white-space&quot;:&quot;nowrap&quot;,&quot;margin&quot;:&quot;4px 4px 4px 4px&quot;},&quot;attributes&quot;:{&quot;class&quot;:{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Success]&quot;,&quot;Yes&quot;]},&quot;sp-css-backgroundColor-BgCornflowerBlue sp-css-color-CornflowerBlueFont sp-css-color-CornflowerBlueFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Success]&quot;,&quot;No&quot;]},&quot;sp-css-backgroundColor-BgMintGreen sp-css-color-MintGreenFont sp-css-color-MintGreenFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Success]&quot;,&quot;&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Success]&quot;,&quot;Not Run&quot;]},&quot;sp-css-backgroundColor-BgGold sp-field-fontSizeSmall sp-css-color-GoldFont sp-css-color-GoldFont&quot;,&quot;sp-field-borderAllRegular sp-field-borderAllSolid sp-css-borderColor-neutralSecondary&quot;]}]}]}]}},&quot;children&quot;:[{&quot;elmType&quot;:&quot;span&quot;,&quot;style&quot;:{&quot;overflow&quot;:&quot;hidden&quot;,&quot;text-overflow&quot;:&quot;ellipsis&quot;,&quot;padding&quot;:&quot;0 3px&quot;},&quot;txtContent&quot;:&quot;[$Success]&quot;,&quot;attributes&quot;:{&quot;class&quot;:{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Success]&quot;,&quot;Yes&quot;]},&quot;sp-css-color-CornflowerBlueFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Success]&quot;,&quot;No&quot;]},&quot;sp-css-color-MintGreenFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Success]&quot;,&quot;&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Success]&quot;,&quot;Not Run&quot;]},&quot;sp-field-fontSizeSmall sp-css-color-GoldFont&quot;,&quot;&quot;]}]}]}]}}}]}],&quot;templateId&quot;:&quot;BgColorChoicePill&quot;}\" DisplayName=\"Success\" FillInChoice=\"FALSE\" Format=\"Dropdown\" Name=\"Success\" Title=\"Success\" Type=\"Choice\" ID=\"{5c9ed873-b4c7-43ed-bee9-eaa21bac7868}\" StaticName=\"Success\"><CHOICES><CHOICE>Yes</CHOICE><CHOICE>No</CHOICE><CHOICE>Not Run</CHOICE></CHOICES></Field>","<Field DisplayName=\"HTTPuri\" Format=\"Dropdown\" IsModern=\"TRUE\" MaxLength=\"255\" Name=\"HTTPuri\" Title=\"HTTPuri\" Type=\"Text\" ID=\"{6c7a7cf8-6c15-44b7-a913-05cc8c1d892d}\" StaticName=\"HTTPuri\" />","<Field DisplayName=\"displayName\" Format=\"Dropdown\" IsModern=\"TRUE\" MaxLength=\"255\" Name=\"displayName\" Title=\"displayName\" Type=\"Text\" ID=\"{3c0fc12c-0411-4eba-859a-07358666187a}\" StaticName=\"displayName\" />","<Field ID=\"{82642ec8-ef9b-478f-acf9-31f7d45fbc31}\" DisplayName=\"Title\" Description=\"\" Name=\"LinkTitle\" SourceID=\"http://schemas.microsoft.com/sharepoint/v3\" StaticName=\"LinkTitle\" Type=\"Computed\" ReadOnly=\"TRUE\" FromBaseType=\"TRUE\" Width=\"150\" DisplayNameSrcField=\"Title\" Sealed=\"FALSE\"><FieldRefs><FieldRef Name=\"Title\" /><FieldRef Name=\"LinkTitleNoMenu\" /><FieldRef Name=\"_EditMenuTableStart2\" /><FieldRef Name=\"_EditMenuTableEnd\" /></FieldRefs><DisplayPattern><FieldSwitch><Expr><GetVar Name=\"FreeForm\" /></Expr><Case Value=\"TRUE\"><Field Name=\"LinkTitleNoMenu\" /></Case><Default><HTML><![CDATA[<div class=\"ms-vb itx\" onmouseover=\"OnItem(this)\" CTXName=\"ctx]]></HTML><Field Name=\"_EditMenuTableStart2\" /><HTML><![CDATA[\">]]></HTML><Field Name=\"LinkTitleNoMenu\" /><HTML><![CDATA[</div>]]></HTML><HTML><![CDATA[<div class=\"s4-ctx\" onmouseover=\"OnChildItem(this.parentNode); return false;\">]]></HTML><HTML><![CDATA[<span>&nbsp;</span>]]></HTML><HTML><![CDATA[<a onfocus=\"OnChildItem(this.parentNode.parentNode); return false;\" onclick=\"PopMenuFromChevron(event); return false;\" href=\"javascript:;\" title=\"Open Menu\"></a>]]></HTML><HTML><![CDATA[<span>&nbsp;</span>]]></HTML><HTML><![CDATA[</div>]]></HTML></Default></FieldSwitch></DisplayPattern></Field>"]}
+"Title","PersonaType","PolicyType","displayName","PolicyJSON","Status","Desc","Success","HTTPuri","ID"
+"Windows - Device Security - Device Guard, Cred Guard - HVCI - v3.7","Finance","config","IA - Windows - Device Security - Device Guard, Cred Guard - HVCI - v3.7"",
+  ""platforms"": ""windows10""","{
+  ""name"": ""PIA - Windows - Device Security - Device Guard, Cred Guard - HVCI - v3.7"",
+  ""platforms"": ""windows10"",
+  ""roleScopeTagIds"": [
+    ""0""
+  ],
+  ""technologies"": ""mdm"",
+  ""templateReference"": {
+    ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationPolicyTemplateReference"",
+    ""templateId"": """",
+    ""templateFamily@odata.type"": ""#microsoft.graph.deviceManagementConfigurationTemplateFamily"",
+    ""templateFamily"": ""none"",
+    ""templateDisplayName"": null,
+    ""templateDisplayVersion"": null
+  },
+  ""settings"": [
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_deviceguard_configuresystemguardlaunch"",
+        ""settingInstanceTemplateReference"": null,
+        ""choiceSettingValue"": {
+          ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingValue"",
+          ""settingValueTemplateReference"": null,
+          ""value"": ""device_vendor_msft_policy_config_deviceguard_configuresystemguardlaunch_1"",
+          ""children@odata.type"": ""#Collection(microsoft.graph.deviceManagementConfigurationSettingInstance)"",
+          ""children"": []
+        }
+      }
+    },
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_deviceguard_lsacfgflags"",
+        ""settingInstanceTemplateReference"": null,
+        ""choiceSettingValue"": {
+          ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingValue"",
+          ""settingValueTemplateReference"": null,
+          ""value"": ""device_vendor_msft_policy_config_deviceguard_lsacfgflags_1"",
+          ""children@odata.type"": ""#Collection(microsoft.graph.deviceManagementConfigurationSettingInstance)"",
+          ""children"": []
+        }
+      }
+    },
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_deviceguard_enablevirtualizationbasedsecurity"",
+        ""settingInstanceTemplateReference"": null,
+        ""choiceSettingValue"": {
+          ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingValue"",
+          ""settingValueTemplateReference"": null,
+          ""value"": ""device_vendor_msft_policy_config_deviceguard_enablevirtualizationbasedsecurity_1"",
+          ""children@odata.type"": ""#Collection(microsoft.graph.deviceManagementConfigurationSettingInstance)"",
+          ""children"": []
+        }
+      }
+    },
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_deviceguard_machineidentityisolation"",
+        ""settingInstanceTemplateReference"": null,
+        ""choiceSettingValue"": {
+          ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingValue"",
+          ""settingValueTemplateReference"": null,
+          ""value"": ""device_vendor_msft_policy_config_deviceguard_machineidentityisolation_0"",
+          ""children@odata.type"": ""#Collection(microsoft.graph.deviceManagementConfigurationSettingInstance)"",
+          ""children"": []
+        }
+      }
+    },
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_deviceguard_requireplatformsecurityfeatures"",
+        ""settingInstanceTemplateReference"": null,
+        ""choiceSettingValue"": {
+          ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingValue"",
+          ""settingValueTemplateReference"": null,
+          ""value"": ""device_vendor_msft_policy_config_deviceguard_requireplatformsecurityfeatures_3"",
+          ""children@odata.type"": ""#Collection(microsoft.graph.deviceManagementConfigurationSettingInstance)"",
+          ""children"": []
+        }
+      }
+    },
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_localsecurityauthority_configurelsaprotectedprocess"",
+        ""settingInstanceTemplateReference"": null,
+        ""choiceSettingValue"": {
+          ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingValue"",
+          ""settingValueTemplateReference"": null,
+          ""value"": ""device_vendor_msft_policy_config_localsecurityauthority_configurelsaprotectedprocess_1"",
+          ""children@odata.type"": ""#Collection(microsoft.graph.deviceManagementConfigurationSettingInstance)"",
+          ""children"": []
+        }
+      }
+    },
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_virtualizationbasedtechnology_hypervisorenforcedcodeintegrity"",
+        ""settingInstanceTemplateReference"": null,
+        ""choiceSettingValue"": {
+          ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingValue"",
+          ""settingValueTemplateReference"": null,
+          ""value"": ""device_vendor_msft_policy_config_virtualizationbasedtechnology_hypervisorenforcedcodeintegrity_1"",
+          ""children@odata.type"": ""#Collection(microsoft.graph.deviceManagementConfigurationSettingInstance)"",
+          ""children"": []
+        }
+      }
+    },
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_virtualizationbasedtechnology_requireuefimemoryattributestable"",
+        ""settingInstanceTemplateReference"": null,
+        ""choiceSettingValue"": {
+          ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingValue"",
+          ""settingValueTemplateReference"": null,
+          ""value"": ""device_vendor_msft_policy_config_virtualizationbasedtechnology_requireuefimemoryattributestable_1"",
+          ""children@odata.type"": ""#Collection(microsoft.graph.deviceManagementConfigurationSettingInstance)"",
+          ""children"": []
+        }
+      }
+    }
+  ]
+}","On","Configures VBS/HVCI, System Guard launch, LSA protection and platform security requirements for enhanced device integrity","Not Run",,"6"
+"Finance - Block Legacy Authentication","Finance","conditionalaccess","PIA - Finance - Block Legacy Authentication","{
+  ""displayName"": ""PIA - Finance - Block Legacy Authentication"",
+  ""state"": ""enabledForReportingButNotEnforced"",
+  ""conditions"": {
+    ""userRiskLevels"": [],
+    ""signInRiskLevels"": [],
+    ""clientAppTypes"": [
+      ""exchangeActiveSync"",
+      ""other""
+    ],
+    ""applications"": {
+      ""includeApplications"": [
+        ""All""
+      ],
+      ""excludeApplications"": [],
+      ""includeUserActions"": [],
+      ""includeAuthenticationContextClassReferences"": [],
+      ""applicationFilter"": null
+    },
+    ""users"": {
+      ""includeUsers"": [
+        ""All""
+      ],
+      ""excludeUsers"": [],
+      ""includeGroups"": [],
+      ""excludeGroups"": [],
+      ""includeRoles"": [],
+      ""excludeRoles"": [],
+      ""includeGuestsOrExternalUsers"": null,
+      ""excludeGuestsOrExternalUsers"": null
+    },
+    ""platforms"": {
+      ""includePlatforms"": [
+        ""all""
+      ],
+      ""excludePlatforms"": []
+    }
+  },
+  ""grantControls"": {
+    ""operator"": ""OR"",
+    ""builtInControls"": [
+      ""block""
+    ],
+    ""customAuthenticationFactors"": [],
+    ""termsOfUse"": [],
+    ""authenticationStrength"": null
+  },
+  ""sessionControls"": null
+}","On","Report‑only CA policy that blocks Exchange ActiveSync/other legacy clients for All users.","Not Run",,"7"
+"Finance Condtitional Access - Require MFA for Finance Users","Finance","conditionalaccess","IA - Finance - Require MFA for Finance Users","{
+  ""displayName"": ""PIA - Finance - Require MFA for Finance Users"",
+  ""state"": ""enabledForReportingButNotEnforced"",
+  ""conditions"": {
+    ""userRiskLevels"": [],
+    ""signInRiskLevels"": [],
+    ""clientAppTypes"": [
+      ""all""
+    ],
+    ""applications"": {
+      ""includeApplications"": [
+        ""All""
+      ],
+      ""excludeApplications"": [],
+      ""includeUserActions"": [],
+      ""includeAuthenticationContextClassReferences"": [],
+      ""applicationFilter"": null
+    },
+    ""users"": {
+      ""includeUsers"": [],
+      ""excludeUsers"": [],
+      ""includeGroups"": [
+        ""3e3a2020-b580-491c-83a0-03f785929501""
+      ],
+      ""excludeGroups"": [],
+      ""includeRoles"": [],
+      ""excludeRoles"": [],
+      ""includeGuestsOrExternalUsers"": null,
+      ""excludeGuestsOrExternalUsers"": null
+    },
+    ""platforms"": {
+      ""includePlatforms"": [
+        ""all""
+      ],
+      ""excludePlatforms"": []
+    }
+  },
+  ""grantControls"": {
+    ""operator"": ""OR"",
+    ""builtInControls"": [
+      ""mfa""
+    ],
+    ""customAuthenticationFactors"": [],
+    ""termsOfUse"": [],
+    ""authenticationStrength"": null
+  },
+  ""sessionControls"": null
+}","On","Report‑only CA policy that requires MFA for the specified Finance group across all client app types.","Not Run",,"8"
+"Finance - Baseline-WindowsHelloForBusiness","Finance","CSP","IA - Baseline-WindowsHelloForBusiness","{
+    ""@odata.type"": ""#microsoft.graph.windows10CustomConfiguration"",
+    ""displayName"": ""PIA - Baseline-WindowsHelloForBusiness"",
+    ""omaSettings"": [
+        {
+            ""@odata.type"": ""#microsoft.graph.omaSettingBoolean"",
+            ""displayName"": ""Enhanced Anti-Spoofing"",
+            ""omaUri"": ""./Device/Vendor/MSFT/PassportForWork/Biometrics/FacialFeaturesUseEnhancedAntiSpoofing"",
+            ""value"": true
+        },
+        {
+            ""@odata.type"": ""#microsoft.graph.omaSettingInteger"",
+            ""displayName"": ""PIN Minimum Length"",
+            ""omaUri"": ""./Device/Vendor/MSFT/PassportForWork/PINComplexity/MinimumPINLength"",
+            ""value"": 6
+        },
+        {
+            ""@odata.type"": ""#microsoft.graph.omaSettingInteger"",
+            ""displayName"": ""PIN Maximum Length"",
+            ""omaUri"": ""./Device/Vendor/MSFT/PassportForWork/PINComplexity/MaximumPINLength"",
+            ""value"": 127
+        },
+        {
+            ""@odata.type"": ""#microsoft.graph.omaSettingInteger"",
+            ""displayName"": ""Require Digits"",
+            ""omaUri"": ""./Device/Vendor/MSFT/PassportForWork/PINComplexity/Digits"",
+            ""value"": 1
+        },
+        {
+            ""@odata.type"": ""#microsoft.graph.omaSettingInteger"",
+            ""displayName"": ""Require Lowercase"",
+            ""omaUri"": ""./Device/Vendor/MSFT/PassportForWork/PINComplexity/LowercaseLetters"",
+            ""value"": 1
+        },
+        {
+            ""@odata.type"": ""#microsoft.graph.omaSettingInteger"",
+            ""displayName"": ""Require Uppercase"",
+            ""omaUri"": ""./Device/Vendor/MSFT/PassportForWork/PINComplexity/UppercaseLetters"",
+            ""value"": 1
+        },
+        {
+            ""@odata.type"": ""#microsoft.graph.omaSettingInteger"",
+            ""displayName"": ""Require Special Characters"",
+            ""omaUri"": ""./Device/Vendor/MSFT/PassportForWork/PINComplexity/SpecialCharacters"",
+            ""value"": 1
+        },
+        {
+            ""@odata.type"": ""#microsoft.graph.omaSettingBoolean"",
+            ""displayName"": ""Require TPM Security Device"",
+            ""omaUri"": ""./Device/Vendor/MSFT/PassportForWork/RequireSecurityDevice"",
+            ""value"": true
+        },
+        {
+            ""@odata.type"": ""#microsoft.graph.omaSettingInteger"",
+            ""displayName"": ""PIN History (Block Previous)"",
+            ""omaUri"": ""./Device/Vendor/MSFT/PassportForWork/PINComplexity/History"",
+            ""value"": 5
+        }
+    ]
+}","On","Baseline enables WHfB facial anti‑spoofing and sets PIN complexity requirement flag.","Not Run",,"10"
+"Finance - App Deployment-Microsoft Teams (WinGet)","Finance","Application","PIA - Microsoft Teams","
+{
+  ""@odata.type"": ""#microsoft.graph.winGetApp"",
+  ""displayName"": ""PIA - Microsoft Teams"",
+  ""description"": ""Teams from Microsoft Store"",
+  ""publisher"": ""Microsoft Corporation"",
+  ""repositoryType"": ""microsoftStore"",
+  ""packageIdentifier"": ""XP8BT8DW290MPQ"", 
+  ""installExperience"": { ""runAsAccount"": ""system"" },
+  ""isFeatured"": false
+}
+","On","Deploys Microsoft Teams via Microsoft Store/WinGet in system context for Finance devices. [Persona JS...efinitions | Word]","Not Run",,"15"
+"Finance - App Deployment Citrix Workspace (WinGet)","Finance","Application","PIA - Citrix Workspace","
+{
+  ""@odata.type"": ""#microsoft.graph.winGetApp"",
+  ""displayName"": ""PIA - Citrix Workspace"",
+  ""description"": ""Citrix Workspace client delivered via Microsoft Store (WinGet) for Finance PersonaPack"",
+  ""publisher"": ""Citrix Systems, Inc."",
+  ""repositoryType"": ""microsoftStore"",
+  ""packageIdentifier"": ""9WZDNCRFJ1WX"",
+  ""installExperience"": { ""runAsAccount"": ""system"" },
+  ""isFeatured"": false
+}
+
+","On","Deploys Citrix Workspace via Microsoft Store/WinGet in system context for Finance devices.","Not Run",,"16"
+"Conditional Access – Block Legacy Authentication","Finance","conditionalaccess","IA - Finance - Block Legacy Authentication","{
+""displayName"": ""PIA - Finance - Block Legacy Authentication"",
+""state"": ""disabled"",
+""conditions"": {
+""clientAppTypes"": [ ""exchangeActiveSync"", ""other"" ],
+""users"": { ""includeUsers"": [ ""All"" ], ""excludeUsers"": [] },
+""applications"": { ""includeApplications"": [ ""All"" ] },
+""platforms"": { ""includePlatforms"": [ ""all"" ], ""excludePlatforms"": [] }
+},
+""grantControls"": {
+""operator"": ""OR"",
+""builtInControls"": [ ""block"" ]
+}
+}
+","On","Enabled CA policy that blocks legacy protocols (Exchange ActiveSync/other) for All users.","Not Run",,"17"
+"Conditional Access – Require MFA for All Users","Finance","conditionalaccess","IA - Finance - Require MFA (All Users)","{
+""displayName"": ""PIA - Finance - Require MFA (All Users)"",
+""state"": ""disabled"",
+""conditions"": {
+""clientAppTypes"": [ ""all"" ],
+""users"": { ""includeUsers"": [ ""All"" ], ""excludeUsers"": [] },
+""applications"": { ""includeApplications"": [ ""All"" ] }
+},
+""grantControls"": {
+""operator"": ""OR"",
+""builtInControls"": [ ""mfa"" ]
+}
+}
+","On","Enabled CA policy mandating MFA for all users across all client app types.","Not Run",,"18"
+"Conditional Access – Require Compliant Devices for Microsoft 365","Finance","conditionalaccess","IA - Finance - Require Compliant Device for M365","{
+""displayName"": ""PIA - Finance - Require Compliant Device for M365"",
+""state"": ""disabled"",
+""conditions"": {
+""clientAppTypes"": [ ""browser"", ""mobileAppsAndDesktopClients"" ],
+""users"": { ""includeUsers"": [ ""All"" ] },
+""applications"": { ""includeApplications"": [ ""Office365"" ] },
+""platforms"": { ""includePlatforms"": [ ""all"" ] }
+},
+""grantControls"": {
+""operator"": ""OR"",
+""builtInControls"": [ ""compliantDevice"" ]
+}
+}","On","Enabled CA policy requiring compliant devices for Office 365 (browser and desktop/mobile clients).","Not Run",,"19"
+"Conditional Access – Require App Protection for Mobile (iOS/Android)","Finance","conditionalaccess","PIA - Finance - Require App Protection (Mobile)","{
+""displayName"": ""PIA - Finance - Require App Protection (Mobile)"",
+""state"": ""disabled"",
+""conditions"": {
+""clientAppTypes"": [ ""mobileAppsAndDesktopClients"" ],
+""users"": { ""includeUsers"": [ ""All"" ] },
+""applications"": { ""includeApplications"": [ ""Office365"" ] },
+""platforms"": { ""includePlatforms"": [ ""iOS"", ""android"" ] }
+},
+""grantControls"": {
+""operator"": ""OR"",
+""builtInControls"": [ ""compliantApplication"" ]
+}
+}","On","Enabled CA policy requiring approved (App Protection‑managed) apps on iOS/Android for Office 365.","Not Run",,"20"
+"Conditional Access – App Enforced Restrictions (SharePoint/OneDrive)","Finance","conditionalaccess","IA - Finance - App Enforced Restrictions (SharePoint/OneDrive via O365)","{
+  ""displayName"": ""PIA - Finance - App Enforced Restrictions (SharePoint/OneDrive via O365)"",
+  ""state"": ""disabled"",
+  ""conditions"": {
+    ""clientAppTypes"": [ ""browser"" ],
+    ""users"": { ""includeUsers"": [ ""All"" ] },
+    ""applications"": {
+      ""includeApplications"": [ ""Office365"" ]
+    },
+    ""platforms"": { ""includePlatforms"": [ ""all"" ] }
+  },
+  ""sessionControls"": {
+    ""applicationEnforcedRestrictions"": { ""isEnabled"": true}
+  }
+}","On","Enabled CA session control applying app‑enforced restrictions for browser access to Office 365.","Not Run",,"21"
+"Device compliance (Windows 10/11)","Finance","compliance","IA - Finance - Windows Compliance","{
+""@odata.type"": ""#microsoft.graph.windows10CompliancePolicy"",
+""displayName"": ""PIA - Finance - Windows Compliance"",
+""description"": ""Finance devices must meet security and health standards."",
+""passwordRequired"": true,
+""passwordBlockSimple"": true,
+""passwordMinimumLength"": 12,
+""passwordRequiredType"": ""alphanumeric"",
+""passwordMinutesOfInactivityBeforeLock"": 15,
+""requireHealthyDeviceReport"": true,
+""secureBootEnabled"": true,
+""bitLockerEnabled"": true,
+""codeIntegrityEnabled"": true,
+""deviceThreatProtectionEnabled"": true,
+""deviceThreatProtectionRequiredSecurityLevel"": ""secured"",
+""osMinimumVersion"": ""10.0.19045.0"",
+""scheduledActionsForRule"": [
+{
+""@odata.type"": ""#microsoft.graph.deviceComplianceScheduledActionForRule"",
+""ruleName"": ""PasswordRequired"",
+""scheduledActionConfigurations"": [
+{
+""@odata.type"": ""#microsoft.graph.deviceComplianceActionItem"",
+""actionType"": ""block"",
+""gracePeriodHours"": 0
+}
+]
+}
+]
+}
+","On","Compliance policy for Finance with password requirements, Secure Boot, BitLocker, Code Integrity, Defender/Threat Protection and minimum OS 10.0.19045.0.","Not Run",,"22"
+"Windows Firewall – Enable All Profiles (via CSP)","Finance","CSP","IA - Finance - Enable Microsoft Defender Firewall (All Profiles) - CSP","{
+  ""@odata.type"": ""#microsoft.graph.windows10CustomConfiguration"",
+  ""displayName"": ""PIA - Finance - Enable Microsoft Defender Firewall (All Profiles) - CSP"",
+  ""description"": ""Enables Windows Defender Firewall for Domain, Private, and Public profiles via Firewall CSP."",
+  ""omaSettings"": [
+    {
+      ""@odata.type"": ""#microsoft.graph.omaSettingInteger"",
+      ""displayName"": ""Enable Firewall - Domain"",
+      ""description"": ""Turn on the firewall for the Domain profile"",
+      ""omaUri"": ""./Device/Vendor/MSFT/Firewall/DomainProfile/EnableFirewall"",
+      ""value"": 1
+    },
+    {
+      ""@odata.type"": ""#microsoft.graph.omaSettingInteger"",
+      ""displayName"": ""Enable Firewall - Private"",
+      ""description"": ""Turn on the firewall for the Private profile"",
+      ""omaUri"": ""./Device/Vendor/MSFT/Firewall/PrivateProfile/EnableFirewall"",
+      ""value"": 1
+    },
+    {
+      ""@odata.type"": ""#microsoft.graph.omaSettingInteger"",
+      ""displayName"": ""Enable Firewall - Public"",
+      ""description"": ""Turn on the firewall for the Public profile"",
+      ""omaUri"": ""./Device/Vendor/MSFT/Firewall/PublicProfile/EnableFirewall"",
+      ""value"": 1
+    }
+  ]
+}","On","Custom OMA‑URI policy enabling Defender Firewall for Domain, Private and Public profiles.","Not Run",,"23"
+"Windows Update Ring – Finance","Finance","CSP","PIA - Finance - Update Ring","{
+  ""@odata.type"": ""#microsoft.graph.windowsUpdateForBusinessConfiguration"",
+  ""displayName"": ""PIA - Finance - Update Ring"",
+  ""description"": ""Finance devices: fast quality updates, controlled feature updates"",
+  ""deliveryOptimizationMode"": ""simpleDownload"",
+  ""automaticUpdateMode"": ""autoInstallAtMaintenanceTime"",
+  ""installationSchedule"": {
+    ""@odata.type"": ""#microsoft.graph.windowsUpdateScheduledInstall"",
+    ""scheduledInstallDay"": ""monday"",
+    ""scheduledInstallTime"": ""02:00:00""
+  },
+  ""qualityUpdatesDeferralPeriodInDays"": 2,
+  ""featureUpdatesDeferralPeriodInDays"": 21,
+  ""driversExcluded"": false,
+  ""microsoftUpdateServiceAllowed"": true
+}","On","Updated WUfB ring with tighter deferrals (Quality 2 days, Feature 21 days) and scheduled installs Monday 02:00.","Not Run","https://graph.microsoft.com/v1.0/deviceManagement/deviceConfigurations","25"
+"MAM – Android App Protection (Finance)","Finance","Other","IA - Finance - AppProtection - Android","{
+""@odata.type"": ""#microsoft.graph.androidManagedAppProtection"",
+""displayName"": ""PIA - Finance - AppProtection - Android"",
+""description"": ""Protect finance data in Android apps"",
+""periodOfflineBeforeAccessCheck"": ""PT12H"",
+""periodOnlineBeforeAccessCheck"": ""PT30M"",
+""allowedInboundDataTransferSources"": ""managedApps"",
+""allowedOutboundDataTransferDestinations"": ""managedApps"",
+""organizationalCredentialsRequired"": false,
+""allowedOutboundClipboardSharingLevel"": ""managedAppsWithPasteIn"",
+""dataBackupBlocked"": true,
+""deviceComplianceRequired"": true,
+""managedBrowserToOpenLinksRequired"": true,
+""saveAsBlocked"": true,
+""periodOfflineBeforeWipeIsEnforced"": ""P90D"",
+""pinRequired"": true,
+""maximumPinRetries"": 5,
+""simplePinBlocked"": true,
+""minimumPinLength"": 6,
+""pinCharacterSet"": ""numeric"",
+""contactSyncBlocked"": true,
+""printBlocked"": true,
+""fingerprintBlocked"": true,
+""appDataEncryptionType"": ""afterDeviceRestart"",
+""targetedAppManagementLevels"": ""mdm"",
+""apps"": [
+{
+""mobileAppIdentifier"": {
+""@odata.type"": ""#microsoft.graph.androidMobileAppIdentifier"",
+""packageId"": ""com.microsoft.office.outlook""
+}
+},
+{
+""mobileAppIdentifier"": {
+""@odata.type"": ""#microsoft.graph.androidMobileAppIdentifier"",
+""packageId"": ""com.microsoft.office.teams""
+}
+},
+{
+      ""mobileAppIdentifier"": {
+        ""@odata.type"": ""#microsoft.graph.androidMobileAppIdentifier"",
+        ""packageId"": ""com.microsoft.office.excel""
+      }
+    }
+]
+}","On","Android MAM policy (Outlook + Teams) enforcing data protection, compliance and PIN while blocking backup/printing","Not Run","https://graph.microsoft.com/v1.0/deviceAppManagement/androidManagedAppProtections","26"
+"MAM – iOS App Protection (Finance)","Finance","Other","PIA - Finance - AppProtection - iOS","{
+""@odata.type"": ""#microsoft.graph.iosManagedAppProtection"",
+""displayName"": ""PIA - Finance - AppProtection - iOS"",
+""description"": ""Protect finance data in iOS apps"",
+""periodOfflineBeforeAccessCheck"": ""PT12H"",
+""periodOnlineBeforeAccessCheck"": ""PT30M"",
+""allowedInboundDataTransferSources"": ""managedApps"",
+""allowedOutboundDataTransferDestinations"": ""managedApps"",
+""organizationalCredentialsRequired"": false,
+""allowedOutboundClipboardSharingLevel"": ""managedAppsWithPasteIn"",
+""dataBackupBlocked"": true,
+""deviceComplianceRequired"": true,
+""managedBrowserToOpenLinksRequired"": true,
+""saveAsBlocked"": true,
+""periodOfflineBeforeWipeIsEnforced"": ""P90D"",
+""pinRequired"": true,
+""maximumPinRetries"": 5,
+""simplePinBlocked"": true,
+""minimumPinLength"": 6,
+""pinCharacterSet"": ""numeric"",
+""contactSyncBlocked"": true,
+""printBlocked"": true,
+""fingerprintBlocked"": true,
+""appDataEncryptionType"": ""afterDeviceRestart"",
+""targetedAppManagementLevels"": ""mdm"",
+""apps"": [
+{
+""mobileAppIdentifier"": {
+""@odata.type"": ""#microsoft.graph.iosMobileAppIdentifier"",
+""bundleId"": ""com.microsoft.Office.Outlook""
+}
+},
+{
+""mobileAppIdentifier"": {
+""@odata.type"": ""#microsoft.graph.iosMobileAppIdentifier"",
+""bundleId"": ""com.microsoft.teams""
+}
+},
+{
+      ""mobileAppIdentifier"": {
+        ""@odata.type"": ""#microsoft.graph.iosMobileAppIdentifier"",
+        ""bundleId"": ""com.microsoft.office.excel""
+      }
+    }
+]
+}","On","iOS MAM policy (Outlook + Teams) enforcing data protection, compliance and PIN while blocking backup/printin","Not Run","https://graph.microsoft.com/v1.0/deviceAppManagement/iosManagedAppProtections","27"
+"Microsoft Defender for Endpoint (Device Control)  - Block removable storage","Finance","CSP","PIA - Finance - Device Control (Removable Storage - Block)","{
+  ""@odata.type"": ""#microsoft.graph.windows10CustomConfiguration"",
+  ""displayName"": ""PIA - Finance - Device Control (Removable Storage - Block)"",
+  ""description"": ""Enable Defender Device Control and default-deny removable storage for Finance."",
+  ""omaSettings"": [
+    {
+      ""@odata.type"": ""#microsoft.graph.omaSettingInteger"",
+      ""displayName"": ""Enable Device Control"",
+      ""omaUri"": ""./Vendor/MSFT/Defender/Configuration/DeviceControlEnabled"",
+      ""value"": 1
+    },
+    {
+      ""@odata.type"": ""#microsoft.graph.omaSettingInteger"",
+      ""displayName"": ""Default Enforcement (Deny)"",
+      ""omaUri"": ""./Vendor/MSFT/Defender/Configuration/DefaultEnforcement"",
+      ""value"": 2
+    }
+  ]
+}","On","Custom OMA‑URI policy that enables Defender Device Control and sets default enforcement to Deny to block unapproved removable storage.","Not Run",,"28"
+"Finance - Defender AV Configuration","Finance","config","PIA - Finance - Defender AV Configuration","{
+  ""name"": ""PIA - Finance - Defender AV Configuration"",
+  ""platforms"": ""windows10"",
+  ""roleScopeTagIds"": [
+    ""0""
+  ],
+  ""technologies"": ""mdm"",
+  ""templateReference"": {
+    ""templateFamily"": ""none""
+  },
+  ""settings"": [
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_defender_allowcloudprotection"",
+        ""choiceSettingValue"": {
+          ""value"": ""device_vendor_msft_policy_config_defender_allowcloudprotection_1"",
+          ""children"": []
+        }
+      }
+    },
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_defender_allowrealtimemonitoring"",
+        ""choiceSettingValue"": {
+          ""value"": ""device_vendor_msft_policy_config_defender_allowrealtimemonitoring_1"",
+          ""children"": []
+        }
+      }
+    },
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_defender_submitsamplesconsent"",
+        ""choiceSettingValue"": {
+          ""value"": ""device_vendor_msft_policy_config_defender_submitsamplesconsent_1"",
+          ""children"": []
+        }
+      }
+    },
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_defender_allowbehaviormonitoring"",
+        ""choiceSettingValue"": {
+          ""value"": ""device_vendor_msft_policy_config_defender_allowbehaviormonitoring_1"",
+          ""children"": []
+        }
+      }
+    },
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_defender_allowioavprotection"",
+        ""choiceSettingValue"": {
+          ""value"": ""device_vendor_msft_policy_config_defender_allowioavprotection_1"",
+          ""children"": []
+        }
+      }
+    },
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_defender_allowonaccessprotection"",
+        ""choiceSettingValue"": {
+          ""value"": ""device_vendor_msft_policy_config_defender_allowonaccessprotection_1"",
+          ""children"": []
+        }
+      }
+    },
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_defender_allowscriptscanning"",
+        ""choiceSettingValue"": {
+          ""value"": ""device_vendor_msft_policy_config_defender_allowscriptscanning_1"",
+          ""children"": []
+        }
+      }
+    },
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_defender_allowarchivescanning"",
+        ""choiceSettingValue"": {
+          ""value"": ""device_vendor_msft_policy_config_defender_allowarchivescanning_1"",
+          ""children"": []
+        }
+      }
+    },
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_defender_puaprotection"",
+        ""choiceSettingValue"": {
+          ""value"": ""device_vendor_msft_policy_config_defender_puaprotection_1"",
+          ""children"": []
+        }
+      }
+    },
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_defender_cloudblocklevel"",
+        ""choiceSettingValue"": {
+          ""value"": ""device_vendor_msft_policy_config_defender_cloudblocklevel_2"",
+          ""children"": []
+        }
+      }
+    }
+  ]
+}","On","Enables real-time protection, cloud-delivered protection (High block level), behaviour monitoring, IOAV, on-access protection, script scanning, archive scanning and PUA protection. Submits safe samples automatically. ","Not Run","https://graph.microsoft.com/beta/deviceManagement/configurationPolicies","29"
+"Finance - BitLocker Configuration","Finance","CSP","PIA - Finance - BitLocker Configuration","{
+  ""@odata.type"": ""#microsoft.graph.windows10CustomConfiguration"",
+  ""displayName"": ""PIA - Finance - BitLocker Configuration"",
+  ""description"": ""Enables BitLocker silent encryption on OS drive, suppresses encryption warning prompt for other disk encryption tools, permits standard user encryption and rotates recovery passwords on use. Recovery key backup to Entra ID must be confirmed in Endpoint Security > Disk Encryption."",
+  ""roleScopeTagIds"": [
+    ""0""
+  ],
+  ""omaSettings"": [
+    {
+      ""@odata.type"": ""#microsoft.graph.omaSettingInteger"",
+      ""displayName"": ""Require Device Encryption"",
+      ""description"": ""Require BitLocker on all drives"",
+      ""omaUri"": ""./Device/Vendor/MSFT/BitLocker/RequireDeviceEncryption"",
+      ""value"": 1
+    },
+    {
+      ""@odata.type"": ""#microsoft.graph.omaSettingInteger"",
+      ""displayName"": ""Silent Encryption - Suppress Warning for Other Disk Encryption"",
+      ""description"": ""Suppresses the encryption warning prompt - required for silent/automatic BitLocker enablement"",
+      ""omaUri"": ""./Device/Vendor/MSFT/BitLocker/AllowWarningForOtherDiskEncryption"",
+      ""value"": 0
+    },
+    {
+      ""@odata.type"": ""#microsoft.graph.omaSettingInteger"",
+      ""displayName"": ""Allow Standard User Encryption"",
+      ""description"": ""Allows AAD-joined devices to enable BitLocker without admin rights - required for silent encryption flow"",
+      ""omaUri"": ""./Device/Vendor/MSFT/BitLocker/AllowStandardUserEncryption"",
+      ""value"": 1
+    },
+    {
+      ""@odata.type"": ""#microsoft.graph.omaSettingInteger"",
+      ""displayName"": ""Recovery Password Rotation"",
+      ""description"": ""Rotate BitLocker recovery password after use - 1 = rotate on AAD-joined devices"",
+      ""omaUri"": ""./Device/Vendor/MSFT/BitLocker/ConfigureRecoveryPasswordRotation"",
+      ""value"": 1
+    },
+    {
+      ""@odata.type"": ""#microsoft.graph.omaSettingInteger"",
+      ""displayName"": ""Encryption Method - OS Drive (XTS-AES-256)"",
+      ""description"": ""Sets OS drive encryption to XTS-AES-256 (value 7)"",
+      ""omaUri"": ""./Device/Vendor/MSFT/BitLocker/EncryptionMethodByDriveType"",
+      ""value"": 7
+    }
+  ]
+}","On","Configures silent BitLocker encryption (XTS-AES-256) on OS drive, suppresses warning prompt for other disk encryption, permits standard user encryption and rotates recovery passwords after use. ","Not Run","https://graph.microsoft.com/v1.0/deviceManagement/deviceConfigurations","30"
+"Finance - Attack Surface Reduction Rules","Finance","CSP","PIA - Finance - Attack Surface Reduction Rules","{
+  ""@odata.type"": ""#microsoft.graph.windows10CustomConfiguration"",
+  ""displayName"": ""PIA - Finance - Attack Surface Reduction Rules"",
+  ""description"": ""..."",
+  ""roleScopeTagIds"": [""0""],
+  ""omaSettings"": [
+    {
+      ""@odata.type"": ""#microsoft.graph.omaSettingString"",
+      ""displayName"": ""ASR Rules - Finance Block Set"",
+      ""description"": ""Combined ASR rule GUIDs with enforcement state. 1=Block, 2=Audit. Pipe-delimited GUID=state pairs."",
+      ""omaUri"": ""./Vendor/MSFT/Policy/Config/Defender/AttackSurfaceReductionRules"",
+      ""value"": ""d4f940ab-401b-4efc-aadc-ad5f3c50688a=1|9e6c4e1f-7d60-472f-ba1a-a39ef669e4b0=1|be9ba2d9-53ea-4cdc-84e5-9b1eeee46550=1|b2b3f03d-6a65-4f7b-a9c7-1c7ef74a9ba4=1|92e97fa1-2edf-4476-bdd6-9dd0b4dddc7b=1|3b576869-a4ec-4529-8536-b80a7769e899=1|75668c1f-73b5-4cf0-bb93-3ecf5cb7cc84=1|d3e037e1-3eb8-44c8-a917-57927947596d=1|5beb7efe-fd9a-4556-801d-275e5ffc04cc=1|26190899-1602-49e8-8b27-eb1d0a1ce869=1|7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c=2|e6db77e5-3df2-4cf1-b95a-636979351e5b=1""
+    }
+  ]
+}","On","Applies 12 ASR rules in Block mode covering Office process chains, LSASS credential theft, email executable content, USB unsigned processes, macro API calls, script obfuscation and WMI persistence. Adobe Reader rule set to Audit pending usage confirmation","Not Run","https://graph.microsoft.com/v1.0/deviceManagement/deviceConfigurations","31"
+"Finance - iOS Compliance Policy","Finance","compliance","PIA - Finance - iOS Compliance","{
+  ""@odata.type"": ""#microsoft.graph.iosCompliancePolicy"",
+  ""displayName"": ""PIA - Finance - iOS Compliance"",
+  ""description"": ""Compliance policy for Finance iOS devices. Requires passcode, blocks jailbroken devices, enforces minimum OS version and device health checks."",
+  ""passcodeRequired"": true,
+  ""passcodeBlockSimple"": true,
+  ""passcodeMinimumLength"": 6,
+  ""passcodeRequiredType"": ""numeric"",
+  ""passcodeMinutesOfInactivityBeforeLock"": 5,
+  ""passcodeExpirationDays"": 365,
+  ""passcodeHistoryCount"": 5,
+  ""passcodeMinutesOfInactivityBeforeScreenTimeout"": 5,
+  ""securityRequireDeviceIsNotJailBroken"": true,
+  ""managedEmailProfileRequired"": false,
+  ""deviceThreatProtectionEnabled"": true,
+  ""deviceThreatProtectionRequiredSecurityLevel"": ""secured"",
+  ""osMinimumVersion"": ""16.0"",
+  ""scheduledActionsForRule"": [
+    {
+      ""@odata.type"": ""#microsoft.graph.deviceComplianceScheduledActionForRule"",
+      ""ruleName"": ""PasswordRequired"",
+      ""scheduledActionConfigurations"": [
+        {
+          ""@odata.type"": ""#microsoft.graph.deviceComplianceActionItem"",
+          ""actionType"": ""block"",
+          ""gracePeriodHours"": 0,
+          ""notificationTemplateId"": """",
+          ""notificationMessageCCList"": []
+        }
+      ]
+    }
+  ]
+}","On","iOS compliance policy requiring 6-digit passcode, blocking simple passcodes, 5-minute inactivity lock, jailbreak detection, MDE Threat Protection at Secured level and minimum iOS 16.0. Non-compliant devices blocked immediately.","Not Run","https://graph.microsoft.com/beta/deviceManagement/deviceCompliancePolicies","32"
+"Finance - Android Compliance Policy","Finance","compliance","PIA - Finance - Android Compliance","{
+  ""@odata.type"": ""#microsoft.graph.androidWorkProfileCompliancePolicy"",
+  ""displayName"": ""PIA - Finance - Android Compliance"",
+  ""description"": ""Compliance policy for Finance Android Work Profile devices. Requires complex password, blocks rooted devices, enforces MDE threat protection and minimum OS version."",
+  ""passwordRequired"": true,
+  ""passwordMinimumLength"": 6,
+  ""passwordRequiredType"": ""numericComplex"",
+  ""passwordMinutesOfInactivityBeforeLock"": 5,
+  ""passwordExpirationDays"": 365,
+  ""passwordHistoryCount"": 5,
+  ""securityBlockJailbrokenDevices"": true,
+  ""deviceThreatProtectionEnabled"": true,
+  ""deviceThreatProtectionRequiredSecurityLevel"": ""secured"",
+  ""securityRequireGooglePlayServices"": true,
+  ""securityRequireSafetyNetAttestationBasicIntegrity"": true,
+  ""securityRequireSafetyNetAttestationCertifiedDevice"": true,
+  ""securityRequireVerifyApps"": true,
+  ""osMinimumVersion"": ""13.0"",
+  ""scheduledActionsForRule"": [
+    {
+      ""@odata.type"": ""#microsoft.graph.deviceComplianceScheduledActionForRule"",
+      ""ruleName"": ""PasswordRequired"",
+      ""scheduledActionConfigurations"": [
+        {
+          ""@odata.type"": ""#microsoft.graph.deviceComplianceActionItem"",
+          ""actionType"": ""block"",
+          ""gracePeriodHours"": 0,
+          ""notificationTemplateId"": """",
+          ""notificationMessageCCList"": []
+        }
+      ]
+    }
+  ]
+}","On","Android W Profile compl 6-char num complex pass, 5-min lock, root/jailbreak det, Google Play Services, SafetyNet Basic Integrity and Cert Device attestation, Verify Apps and MDE Threat Prot at Secured level. Min Android 13.0. Blocked on n-compliance.","Not Run","https://graph.microsoft.com/beta/deviceManagement/deviceCompliancePolicies","33"
+"Finance - SmartScreen Configuration","Finance","config","PIA - Finance - SmartScreen Configuration","{
+  ""name"": ""PIA - Finance - SmartScreen Configuration"",
+  ""platforms"": ""windows10"",
+  ""roleScopeTagIds"": [
+    ""0""
+  ],
+  ""technologies"": ""mdm"",
+  ""templateReference"": {
+    ""templateFamily"": ""none""
+  },
+  ""settings"": [
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_smartscreen_enablesmartscreeninshell"",
+        ""choiceSettingValue"": {
+          ""value"": ""device_vendor_msft_policy_config_smartscreen_enablesmartscreeninshell_1"",
+          ""children"": []
+        }
+      }
+    },
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_smartscreen_enableappinstallcontrol"",
+        ""choiceSettingValue"": {
+          ""value"": ""device_vendor_msft_policy_config_smartscreen_enableappinstallcontrol_1"",
+          ""children"": []
+        }
+      }
+    },
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_smartscreen_preventoverrideforfilesinshell"",
+        ""choiceSettingValue"": {
+          ""value"": ""device_vendor_msft_policy_config_smartscreen_preventoverrideforfilesinshell_1"",
+          ""children"": []
+        }
+      }
+    },
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_browser_allowsmartscreen"",
+        ""choiceSettingValue"": {
+          ""value"": ""device_vendor_msft_policy_config_browser_allowsmartscreen_1"",
+          ""children"": []
+        }
+      }
+    },
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_browser_preventsmartscreenpromptoverride"",
+        ""choiceSettingValue"": {
+          ""value"": ""device_vendor_msft_policy_config_browser_preventsmartscreenpromptoverride_1"",
+          ""children"": []
+        }
+      }
+    },
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_browser_preventsmartscreenpromptoverrideforfiles"",
+        ""choiceSettingValue"": {
+          ""value"": ""device_vendor_msft_policy_config_browser_preventsmartscreenpromptoverrideforfiles_1"",
+          ""children"": []
+        }
+      }
+    }
+  ]
+}","On","Wind Def SmartScreen in the shell and for app install control, blocks user overrides for flagged files in shell, and enables SmSc in Edge/browser with override prevention for both sites and file downloads. S","Not Run","https://graph.microsoft.com/beta/deviceManagement/configurationPolicies","34"
+"Finance - Defender Hardening (Tamper Protection and CFA)","Finance","config","PIA - Finance - Defender Hardening (Tamper Protection and CFA)","{
+  ""name"": ""PIA - Finance - Defender Hardening (Tamper Protection and CFA)"",
+  ""platforms"": ""windows10"",
+  ""roleScopeTagIds"": [
+    ""0""
+  ],
+  ""technologies"": ""mdm"",
+  ""templateReference"": {
+    ""templateFamily"": ""none""
+  },
+  ""settings"": [
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_defender_tamperprotection"",
+        ""choiceSettingValue"": {
+          ""value"": ""device_vendor_msft_policy_config_defender_tamperprotection_5"",
+          ""children"": []
+        }
+      }
+    },
+    {
+      ""settingInstance"": {
+        ""@odata.type"": ""#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"",
+        ""settingDefinitionId"": ""device_vendor_msft_policy_config_defender_enablecontrolledfolderaccess"",
+        ""choiceSettingValue"": {
+          ""value"": ""device_vendor_msft_policy_config_defender_enablecontrolledfolderaccess_2"",
+          ""children"": []
+        }
+      }
+    }
+  ]
+}","On","Def Tamper Protection (value 5 = enabled) to prevent users and malware disabling AV/EDR settings. Sets Controlled Folder Access to Audit mode (value 2) - monitor for LOB app to Block (value 1). C","Not Run","https://graph.microsoft.com/beta/deviceManagement/configurationPolicies","35"
