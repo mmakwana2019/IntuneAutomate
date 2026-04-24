@@ -1,4 +1,4 @@
-# IntuneAutomate - Coming Soon
+# IntuneAutomate - Now Live
 Simplify Key Microsoft Intune tasks using existing company skills and license investments. 
 Check out the companion App - IntuneAutomate Mobile - Already available for download and use (https://github.com/Croxleyboy/IntuneAutomateMobile)
 
@@ -41,9 +41,9 @@ Visit the website for additional information and use this GitHub resource to dow
 
 ---
 
-## ✅ **GitHub**
+## ✅ **GitHub- Project Folders**
 
-Before the release of IntuneAutomate v0.1 This repository does not contain the source solution BUT once available will include  **Four directories** to help you deploy in your environment: A Setup guide, Power platform solution, SharePoint List (data source) and Power Automate flows to sychronise data. Register via the website to be notified once available.
+With the release of version 1.0 there are **Four key directories** to help you get setup and deploy within your own environment: A Setup guide, Power platform solution, SharePoint List (data source) and Power Automate flows to sychronise data. Clone and download the files in preparation for the setup and please raise your questions here within GiiHub or contact me via LinkedIn.
 
 ---
 
