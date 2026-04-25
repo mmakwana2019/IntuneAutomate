@@ -46,6 +46,7 @@ Visit the website for additional information and use this GitHub resource to dow
 ## ✅ **GitHub- Project Folders**
 
 With the release of version 1.0 there are **Four key directories** to help you get setup and deploy within your own environment: A Setup guide, Power platform solution, SharePoint List (data source) and Power Automate flows to sychronise data. Clone and download the files in preparation for the setup and please raise your questions here within GiiHub or contact me via LinkedIn.
+
 Read both Setup guides to get started and introducing IntuneAutomate to your own tenant!
 
 ---
